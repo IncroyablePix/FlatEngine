@@ -1,12 +1,8 @@
 package be.helmo.level.entities;
 
-import be.helmo.graphics.Renderer;
 import be.helmo.graphics.sprites.ActiveSprite;
-import be.helmo.level.Camera;
 import be.helmo.level.GameLevel;
-import be.helmo.level.entities.particles.types.ParticleFabric;
 import be.helmo.main.GameThread;
-import be.helmo.physics.ColParams;
 import be.helmo.physics.Collider;
 
 public class Sushi extends Pickup implements Pickupable {

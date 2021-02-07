@@ -1,6 +1,6 @@
 package be.helmo.level.entities.particles;
 
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.graphics.TempElement;
 import be.helmo.level.Camera;
 import be.helmo.level.GameLevel;

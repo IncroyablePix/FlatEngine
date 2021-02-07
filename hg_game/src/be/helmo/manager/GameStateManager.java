@@ -1,13 +1,12 @@
 package be.helmo.manager;
 
-import be.helmo.enums.GameMenus;
-import be.helmo.enums.GameStates;
 import be.helmo.game.*;
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.main.screen.GameWindow;
 import be.helmo.manager.controls.ControlListener;
 import be.helmo.manager.controls.Controls;
 import be.helmo.manager.debug.Debug;
+import be.helmo.menu.MenuState;
 
 /**
  * GameStateManager
@@ -19,6 +18,7 @@ import be.helmo.manager.debug.Debug;
  */
 public class GameStateManager {
     private boolean paused;
+    private final Loading loading;
     private final GamePause pause;
 
     private final SaveSet save;
@@ -37,12 +37,13 @@ public class GameStateManager {
         this.save = new SaveSet();
 
         this.pause = new GamePause(this);
+        this.loading = new Loading();
 
         setResolution(save.getResX(), save.getResY());
         fullScreenRelay(save.getFullscreen());
         setFPSLimit(save.getFPSLimit());
 
-        setState(GameStates.INTRO);
+        setState(new GameIntro(this));
 
         Controls.get().addListener(new ControlListener() {
             @Override
@@ -75,11 +76,7 @@ public class GameStateManager {
         save.setResolution(x, y);
     }
 
-    public float getCoef() {
-        return gw.getCoef();
-    }
-	
-	/*public void unloadState(int i) {
+    /*public void unloadState(int i) {
 		gameStates[i] = null;
 	}*/
 
@@ -88,38 +85,19 @@ public class GameStateManager {
             pause.init();
     }
 
-    public void setState(GameStates state) {
-        previousState = currentState;
-        if (previousState != null)
-            previousState.terminate();
-        //unloadState(previousState);
+    public void setState(GameState state) {
+        if(state != null) {
+            previousState = currentState;
+            if (previousState != null)
+                previousState.terminate();
+            //unloadState(previousState);
 
-        //currentState = state;
+            //currentState = state;
 
-        switch (state) {
-            case INTRO: {
-                currentState = new GameIntro(this);
-                break;
-            }
-            case MENU: {
-                currentState = new GameMenu(this);
-                break;
-            }
-            case PLAY: {
-                currentState = new GamePlay(this);
-                break;
-            }
-            case DEBUG: {
-                currentState = new GameDebug(this);
-                break;
-            }
-            case GAME_OVER: {
-                currentState = new GameOver(this);
-                break;
-            }
+            currentState = state;
+
+            currentState.init();
         }
-
-        currentState.init();
     }
 
     public void update() {
@@ -140,13 +118,16 @@ public class GameStateManager {
             pause.draw(renderer);
         }
         else if (currentState != null) {
-            currentState.draw(renderer);
+            if(currentState.isInitialized())
+                currentState.draw(renderer);
+            else
+                loading.draw(renderer);
         }
 
         Debug.get().draw(renderer);//Debug
     }
 
-    public void setMenuState(GameMenus menu) {
+    public void setMenuState(MenuState menu) {
         if (currentState instanceof GameMenu) {
             currentState.setState(menu);
         }

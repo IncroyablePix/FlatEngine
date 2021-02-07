@@ -1,6 +1,6 @@
 package be.helmo.level.entities;
 
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.graphics.sprites.ActiveSprite;
 import be.helmo.level.*;
 import be.helmo.manager.debug.Debug;
@@ -16,7 +16,7 @@ public class Player extends DirectionEntity {
 
     private boolean jumped;
 
-    public Player(GameLevel gl, ActiveSprite left, ActiveSprite right, Arrow arrow, double x, double y) {
+    public Player(GameLevel gl, ActiveSprite left, ActiveSprite right, double x, double y) {
         super(gl, left, right, x, y);
 
         //this.arrow = arrow;
@@ -37,7 +37,6 @@ public class Player extends DirectionEntity {
 
         if (!isDead() && gl.getWaterLevel() > getY()) {
             gl.onPlayerFallsInWater(this);
-            dead = true;
         }
     }
 
@@ -74,11 +73,12 @@ public class Player extends DirectionEntity {
     }
 
     @Override
-    public void onCollision(Collision... collisions) {
-        Collision col;
-        if (collisions.length == 1 && (col = collisions[0]) != null) {
-            if (col.getDirection() == Collision.CollisionDirection.BOTTOM) {
-                gl.onPlayerReachesPlatform(this, toPlatform(col.getTile()));
+    public void onCollision(Collision collision) {
+        if (collision != null) {
+            if (collision.getDirection() == Collision.CollisionDirection.BOTTOM) {
+                gl.onPlayerReachesPlatform(this, toPlatform(collision.getTile()));
+
+                Debug.log("Player : [" + getX() + ", " + getY() + "] - Tile : " + collision.getTile());
                 jumped = false;
             }
         }

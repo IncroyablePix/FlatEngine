@@ -1,8 +1,8 @@
 package be.helmo.manager.debug;
 
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.graphics.texts.Text;
-import be.helmo.manager.FontManager;
+import be.helmo.manager.fonts.Fonts;
 
 import java.awt.*;
 
@@ -25,7 +25,7 @@ public class DebugInfo {
         info = new Text[MAX_SIZE];
 
         for (byte i = 0; i < MAX_SIZE; i++) {
-            info[i] = new Text(20, BASE_POSITION + (i * 22), -1, " ", Color.BLACK, FontManager.COURIER_T);
+            info[i] = new Text(20, BASE_POSITION + (i * 22), -1, " ", Color.BLACK, Fonts.COURIER_T);
         }
 
         cursor = 0;

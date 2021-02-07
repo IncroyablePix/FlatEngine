@@ -1,6 +1,6 @@
 package be.helmo.level.entities.controlables;
 
-import be.helmo.enums.Directions;
+import be.helmo.level.entities.Directions;
 import be.helmo.level.entities.Player;
 import be.helmo.manager.controls.ControlListener;
 import be.helmo.manager.controls.Controls;
@@ -10,9 +10,11 @@ import be.helmo.manager.debug.DebugInfo;
 public class PlayerJump implements ControlListener {
 
     private final Player player;
+    private double maxVel;
     private boolean paused = false;
 
-    public PlayerJump(final Player player) {
+    public PlayerJump(final Player player, final double maxVel) {
+        this.maxVel = Math.abs(maxVel);
         this.player = player;
     }
 
@@ -44,15 +46,15 @@ public class PlayerJump implements ControlListener {
                 //gl.onPlayerJump();
             }
             else if ((down & Controls.JUMP) == Controls.JUMP &&
+                    !player.isFalling() &&
                     !player.hasJumped()) {
-                yVel = Math.min(player.getVelY() + 0.005, 15.0);
+                yVel = Math.min(player.getVelY() + 0.005, maxVel);
 
-                if (yVel >= 15.0)
+                if (yVel >= maxVel)
                     player.setJumped(true);
             }
-            else if((released & Controls.JUMP) == Controls.JUMP && player.hasJumped())
-            {
-                player.setJumped(false);
+            else if((released & Controls.JUMP) == Controls.JUMP && player.hasJumped()) {
+                player.setJumped(true);
             }
 
             player.setMovingVector(xVel, yVel);

@@ -24,4 +24,9 @@ public class Size {
     public void setySize(double ySize) {
         this.ySize = ySize;
     }
+
+    @Override
+    public String toString() {
+        return "[" + xSize + ", " + ySize + "]";
+    }
 }

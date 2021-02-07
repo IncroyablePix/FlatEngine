@@ -1,7 +1,6 @@
 package be.helmo.menu;
 
-import be.helmo.enums.GameMenus;
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.main.screen.Screen;
 import be.helmo.manager.GameStateManager;
 
@@ -12,12 +11,8 @@ public class MenuOptions extends MenuState {
             "Précédent"
     };
 
-    private GameMenus previousMenu = GameMenus.NO_MENU;
-
-    public MenuOptions(final GameStateManager gsm, final GameMenus origin) {
-        super(gsm);
-
-        previousMenu = origin;
+    public MenuOptions(final GameStateManager gsm, final MenuState previousMenu) {
+        super(gsm, previousMenu);
 
         setupMenu();
         init();
@@ -64,10 +59,10 @@ public class MenuOptions extends MenuState {
     @Override
     public void selectOption() {
         if (current == 0) {//Options vidéo
-            gsm.setMenuState(GameMenus.O_VIDEO_MENU);
+            gsm.setMenuState(new MenuVideo(gsm, this));
         }
         else if (current == 1) {//Précédent
-            gsm.setMenuState(previousMenu);
+            goBack();
         }
     }
 

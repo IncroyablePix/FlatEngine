@@ -1,9 +1,9 @@
 package be.helmo.manager.debug;
 
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.graphics.texts.Text;
 import be.helmo.main.screen.Screen;
-import be.helmo.manager.FontManager;
+import be.helmo.manager.fonts.Fonts;
 
 import java.awt.*;
 
@@ -33,14 +33,17 @@ public class DebugConsole {
         if (text != null) {
             System.out.println(text);
 
-            if (cursor < MAX_SIZE) {
-                messages[cursor] = new Text(20, BASE_POSITION - (cursor * 22), -1, text, Color.RED, FontManager.COURIER_T);
-                cursor++;
-            }
-            else {
-                shiftMessages();
-                messages[MAX_SIZE - 1].setText(text);
-                //messages[0].setText(text);
+            String[] splits = text.split("\n");
+            for (String split : splits) {
+                if (cursor < MAX_SIZE) {
+                    messages[cursor] = new Text(20, BASE_POSITION - (cursor * 22), -1, split, Color.RED, Fonts.COURIER_T);
+                    cursor++;
+                }
+                else {
+                    shiftMessages();
+                    messages[MAX_SIZE - 1].setText(split);
+                    //messages[0].setText(text);
+                }
             }
         }
     }

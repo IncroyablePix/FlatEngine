@@ -1,44 +1,51 @@
 package be.helmo.level;
 
+import be.helmo.graphics.hud.HUD;
+import be.helmo.graphics.hud.elements.textfield.TextField;
+import be.helmo.graphics.render.Renderer;
+import be.helmo.graphics.Speed;
 import be.helmo.graphics.hud.Observer;
 import be.helmo.graphics.overimages.Img;
-import be.helmo.graphics.Renderer;
 import be.helmo.graphics.sprites.ActiveSprite;
+import be.helmo.graphics.texts.Alignement;
 import be.helmo.graphics.texts.Text;
 import be.helmo.graphics.texts.TypeText;
-import be.helmo.level.entities.*;
+import be.helmo.level.entities.Cat;
+import be.helmo.level.entities.Pickup;
+import be.helmo.level.entities.Player;
+import be.helmo.level.entities.Sushi;
 import be.helmo.level.entities.controlables.PlayerJump;
 import be.helmo.level.entities.particles.Particles;
 import be.helmo.level.entities.particles.types.ParticleFabric;
 import be.helmo.level.map.MapGenerator;
 import be.helmo.level.map.Mapping;
+import be.helmo.level.map.RandomGenerator;
 import be.helmo.main.GameThread;
 import be.helmo.main.screen.Screen;
 import be.helmo.manager.audio.AudioManager;
 import be.helmo.manager.controls.Controls;
 import be.helmo.manager.debug.Debug;
-import be.helmo.manager.FontManager;
+import be.helmo.manager.fonts.Fonts;
 import be.helmo.manager.image.PixManager;
+import be.helmo.physics.ColParams;
 import be.helmo.physics.Collider;
 import be.helmo.physics.coords.Coords;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 import static be.helmo.main.screen.Screen.WIN_WIDTH;
 import static be.helmo.manager.image.PixManager.TILE_SIZE;
 
 public class GameLevel {
     public static final int     BOARD = WIN_WIDTH / TILE_SIZE,
-                                BOARD_HEIGHT = 18;
-
-    public static final byte    MIN_STRENGTH = 18,
-                                MAX_STRENGTH = 40;
+            BOARD_HEIGHT = 18;
 
     private final int level;
     private final Mapping map;
+    private final HUD hud;
 
     private final Img closing;
     private byte end;
@@ -54,6 +61,7 @@ public class GameLevel {
     private final Cat cat;
     private final List<Pickup> pickups;
     private final Observer particles;
+    private final Liquid liquid;
 
     private final PlayerJump pjump;
 
@@ -65,16 +73,26 @@ public class GameLevel {
 
         this.camera = new Camera(0, 0);
 
+        am.stop("menu");
+        am.unload("menu");
+
+        if(!am.isLoaded("ingame") || !am.isPlaying("ingame")) {
+            am.load("/be/helmo/resources/Sound/Music/ambiantlow.mp3", "ingame");
+            am.setVolume("ingame", -10);
+            am.loop("ingame");
+        }
+
         Debug.log("Creating map...");
-        this.map = new Mapping(this, BOARD, level * 4 + 20, camera, null/*new RandomGenerator()*/);
+        this.map = new Mapping(this, BOARD, level * 4 + 20, camera, new RandomGenerator(level, BOARD));
         Debug.log("Generating map...");
 
         long now = System.nanoTime();
-        this.map.initMap(level + 5, (level < 15 ? 5 - (int) Math.ceil(level / 5.0) : 2), BOARD, level);
+        this.map.initMap(level + 5, (level < 15 ? 5 - (int) Math.ceil(level / 5.0) : 2), BOARD);
 
         Debug.log("Map generated in " + (System.nanoTime() - now) / 1000000 + " ms!");
 
         observer = new Observer();
+        hud = new HUD();
         
         /*background = new BackgroundLayer(GameWindow.WIN_WIDTH, GameWindow.WIN_HEIGHT);
         background.pasteImage(PixManager.get().sky(), 0, 0);*/
@@ -91,15 +109,26 @@ public class GameLevel {
 
         particles = new Observer();
 
+        liquid = new Liquid(BOARD, PixManager.WATER_COLOR);
+        liquid.toggleWaterMovement(true);
+
+        hud.add(new TextField(20, 715, Alignement.LEFT, false, Debug::log));
+        /*hud.add(new Button(Screen.WIN_WIDTH / 2, Screen.WIN_HEIGHT, 300, 50, new Text(WIN_WIDTH / 2, Screen.WIN_HEIGHT, -1, "TEST", Color.RED, Fonts.ORATOR_T)) {
+            @Override
+            public void selectElement(boolean select) {
+
+            }
+        });*/
+
         //---END
 
         closing = new Img(0, Screen.WIN_HEIGHT, Screen.WIN_WIDTH, Screen.WIN_HEIGHT, -1, buildClosingImage(), 1.f);
 
         finishText = new TypeText(Screen.WIN_WIDTH / 2, Screen.WIN_HEIGHT / 2, 150,
-                Text.SPEED_SLOW, "Niveau " + level + " terminé !", Color.WHITE,
-                FontManager.CHAMP_LIMO_S);
+                Speed.SLOW, "Niveau " + level + " terminé !", Color.WHITE,
+                Fonts.CHAMP_LIMO_S);
 
-        finishText.setAlignement(Text.ALIGNEMENT_CENTER);
+        finishText.setAlignement(Alignement.CENTER);
 
         end = 0;
     }
@@ -107,11 +136,14 @@ public class GameLevel {
     private void loadImages() {
         PixManager.get().loadBigImage(PixManager.SKIES, "SKY");
         PixManager.get().loadSpriteSheet(PixManager.SUSHI, "SUSHI", 54, 54);
+        PixManager.get().loadSpriteSheet(PixManager.BALL, "BALL", 15, 15);
         PixManager.get().loadSpriteSheet(PixManager.TREE, "TREE", 120, 240);
         PixManager.get().loadSpriteSheet(PixManager.DIRT, "DIRT", 6, 6);
         PixManager.get().loadSpriteSheet(PixManager.STARS, "STARS", 40, 40);
         PixManager.get().loadSpriteSheet(PixManager.PASCAL, "PASCAL", 60, 74);
-        PixManager.get().loadSpriteSheet(PixManager.WATER, "WATER", TILE_SIZE, TILE_SIZE);
+        PixManager.get().unloadSpriteSheet("TILES");
+        PixManager.get().loadSpriteSheet(PixManager.TILES, "TILES", TILE_SIZE, TILE_SIZE);
+        PixManager.get().loadSpriteSheet(PixManager.WATER, "LIQUID", TILE_SIZE, TILE_SIZE);
         PixManager.get().loadSpriteSheet(PixManager.CAT, "CAT", TILE_SIZE, TILE_SIZE);
         PixManager.get().loadSpriteSheet(PixManager.PLAYER, "PLAYER", TILE_SIZE, TILE_SIZE);
     }
@@ -138,7 +170,6 @@ public class GameLevel {
                         PixManager.get().getSprites("PLAYER", 0, 2)),
                 new ActiveSprite(0.0, 0.0, 10,
                         PixManager.get().getSprites("PLAYER", 1, 3)),
-                new Arrow(this.getLevel()),
                 0, 0);
     }
 
@@ -168,7 +199,7 @@ public class GameLevel {
     }
 
     private PlayerJump createPlayerJump() {
-        PlayerJump pjump = new PlayerJump(player);
+        PlayerJump pjump = new PlayerJump(player, 15.0 + (level * 0.5));
         Controls.get().addListener(pjump);
 
         return pjump;
@@ -179,6 +210,8 @@ public class GameLevel {
     }
 
     public void update() {
+        hud.update();
+
         updateScrolling();
 
         if (this.map != null)
@@ -190,6 +223,9 @@ public class GameLevel {
             this.cat.update(map.getCollider());
 
         updatePlayer();
+
+        if (liquid != null)
+            liquid.update();
 
         if(particles != null)
             particles.update();
@@ -246,9 +282,12 @@ public class GameLevel {
         if(particles != null)
             particles.draw(renderer);
 
+        liquid.draw(renderer, camera);
+
         if (observer != null)
             observer.draw(renderer);
 
+        hud.draw(renderer);
     }
 
     public int getMinBorder() {
@@ -269,7 +308,7 @@ public class GameLevel {
         closing.setPos(0, Screen.WIN_HEIGHT * 2);
         closing.setVelocity(0, -15.0);
 
-        am.load("/be/helmo/resources/Sound/SFX/cat" + MapGenerator.randomEx(1, 6) + ".wav", "cat", true);
+        am.load("/be/helmo/resources/Sound/SFX/cat" + MapGenerator.randomEx(1, 6) + ".wav", "cat");
         am.setVolume("cat", 0);
         am.play("cat");
 
@@ -280,37 +319,6 @@ public class GameLevel {
         map.addScrolling(x, y);
     }
 
-    public static byte getPlayerMaxJumpStrength(int level) {
-        byte strength;
-        switch (level / 4) {
-            case 0:
-                strength = 20;
-                break;
-            case 1:
-                strength = 22;
-                break;
-            case 2:
-                strength = 24;
-                break;
-            case 3:
-                strength = 27;
-                break;
-            case 4:
-                strength = 30;
-                break;
-            case 5:
-                strength = 35;
-                break;
-            case 6:
-                strength = 38;
-                break;
-            default:
-                strength = MAX_STRENGTH;
-                break;
-        }
-        return strength;
-    }
-
     public void addParticles(Particles particles) {
         if(particles != null) {
             this.particles.add(particles);
@@ -319,8 +327,9 @@ public class GameLevel {
 
     public void onPlayerReachesPlatform(final Player player, final Platform platform) {
         if (platform != null) {
-
+            //ParticleFabric.createParticles(ParticleFabric.ParticleType.DIRT_PARTICLE, player.getX(), player.getY(), 10, 300,false, this);
             ParticleFabric.createParticles(ParticleFabric.ParticleType.DIRT_PARTICLE, player.getX(), player.getY(), 10, 300,false, this);
+            //observer.add(new FlashImage(Speed.MEDIUM, FlashImage.FlashColor.RED));
             //addParticles(new Particles(this, 10, 300, player.getX(), player.getY()));
             /*am.load("/be/helmo/resources/Sound/SFX/pascal.mp3", "pascal", true);
             am.setVolume("pascal", 0);
@@ -336,17 +345,17 @@ public class GameLevel {
                 int sushis = getPickups();
                 if (sushis > 0) {
                     observer.add(new TypeText(50, Screen.WIN_HEIGHT / 2, 150,
-                            Text.SPEED_MEDIUM, "Il vous reste " + sushis + " sushi" + (sushis == 1 ? "" : "s") + " à récupérer !", Color.WHITE,
-                            FontManager.CHAMP_LIMO_S));
+                            Speed.MEDIUM, "Il vous reste " + sushis + " sushi" + (sushis == 1 ? "" : "s") + " à récupérer !", Color.WHITE,
+                            Fonts.CHAMP_LIMO_S));
                 }
                 else {
                     player.setFrozen(true);
-                    map.toggleWaterMovement(false);
+                    liquid.toggleWaterMovement(false);
                     finish();
                 }
             }
             else {
-                Debug.log("Player reaches platform on " + platform.getY());
+                //Debug.log("Player reaches platform on " + platform.getY());
             }
         }
     }
@@ -358,20 +367,22 @@ public class GameLevel {
 
     private void onPlayerPickUpPickup(Player player, Pickup pickup) {
         ParticleFabric.createParticles(ParticleFabric.ParticleType.STAR_PARTICLE, pickup.getX(), pickup.getY(), 5, 90, false, this);
-        Debug.log("Sushi picked up!");
+        Debug.log("Pickup picked up!");
         //water.increaseWaterVel(-0.25);
     }
 
     public void onPlayerFallsInWater(Player player) {
-        Debug.log("Player fell into water");
-        onPlayerDrawn(player);
-        map.toggleWaterMovement(false);
-    }
+        if(this.player.isAlive()) {
+            Debug.log("Player fell into water");
 
-    private void onPlayerDrawn(Player player) {
-        AudioManager.get().play("drawn");
-        player.setFrozen(true);
-        player.setAlive(false);
+            AudioManager.get().play("drawn");
+            //player.setFrozen(true);
+            player.setAlive(false);
+            pjump.pause(true);
+            player.setColParams(ColParams.NO_COL);
+
+            liquid.toggleWaterMovement(true);
+        }
     }
 
     public int getPickups() {
@@ -379,7 +390,11 @@ public class GameLevel {
     }
 
     public double getWaterLevel() {
-        return map.getWaterLevel();
+        return liquid.getWaterLevel();
+    }
+
+    public void increaseWaterVel(double vel) {
+        liquid.increaseWaterVel(vel);
     }
 
     private BufferedImage buildClosingImage() {
@@ -402,6 +417,8 @@ public class GameLevel {
         else if (end == 2 && !observer.contains(finishText)) {
             if (levelEndListener != null)
                 levelEndListener.onLevelFinishes(level);
+
+            terminate();
         }
     }
 
@@ -414,7 +431,8 @@ public class GameLevel {
         if (levelEndListener != null) {
             levelEndListener.onGameOver();
         }
-        Debug.log("Death");
+
+        terminate();
     }
 
     private void updatePlayer() {
@@ -424,7 +442,7 @@ public class GameLevel {
 
             this.player.update(map.getCollider());
 
-            if (this.player.getY() < getWaterLevel() - 1)
+            if (this.player.getY() < getWaterLevel() - 1.0)
                 gameOver();
         }
     }
@@ -462,6 +480,10 @@ public class GameLevel {
         xScrolling *= GameThread.actionFactor * 30;
         yScrolling *= GameThread.actionFactor * 30;
 
-        camera.increment(0.0, yScrolling);
+        camera.increment(xScrolling, yScrolling);
+    }
+
+    private void terminate() {
+        hud.terminate();
     }
 }

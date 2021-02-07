@@ -1,6 +1,6 @@
 package be.helmo.level.entities;
 
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.graphics.sprites.ActiveSprite;
 import be.helmo.level.Camera;
 import be.helmo.level.GameLevel;
@@ -65,7 +65,11 @@ public abstract class Entity implements Physical {
     }
 
     public void draw(final Renderer renderer, final Camera camera) {
-        activeSprite.draw(renderer, camera);
+        if(camera != null && renderer != null) {
+            if(camera.getY() + camera.getHeight() + getSizeY() >= getY() &&
+                    getY() >= camera.getY() - getSizeY())
+                activeSprite.draw(renderer, camera);
+        }
     }
 
     public void addListener(EntityMovementListener listener) {
@@ -117,6 +121,9 @@ public abstract class Entity implements Physical {
     @Override
     public void setMass(double g) { this.phys.setMass(g); }
 
+    @Override
+    public double getBounciness() { return this.phys.getBounciness(); }
+
     public void setMovingVector(double xVel, double yVel) {
         this.vel.setxVel(xVel);
         this.vel.setyVel(yVel);
@@ -124,7 +131,7 @@ public abstract class Entity implements Physical {
 
     public void move(Collider collider) {
         if (!isFrozen()) {
-            this.phys.move(collider);
+            this.phys.move(collider, col);
 
             for (EntityMovementListener listener : listeners)
                 if (listener != null)
@@ -149,8 +156,7 @@ public abstract class Entity implements Physical {
     }
 
     @Override
-    public void onCollision(Collision... collisions) {
-
+    public void onCollision(Collision collision) {
     }
 
     @Override

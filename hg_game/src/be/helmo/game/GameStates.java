@@ -1,4 +1,4 @@
-package be.helmo.enums;
+package be.helmo.game;
 
 /**
  * GameStates

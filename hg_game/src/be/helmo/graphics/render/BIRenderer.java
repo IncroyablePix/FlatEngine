@@ -1,7 +1,6 @@
-package be.helmo.graphics;
+package be.helmo.graphics.render;
 
-import be.helmo.graphics.sprites.Sprite;
-import be.helmo.manager.image.PixManager;
+import be.helmo.manager.fonts.Fonts;
 
 import java.awt.*;
 
@@ -19,12 +18,17 @@ public class BIRenderer implements Renderer {
     }
 
     @Override
-    public void drawString(int x, int y, String text, byte font) {
+    public void drawString(int x, int y, String text, Fonts font) {
 
     }
 
     @Override
-    public void drawString(int x, int y, String text, byte font, float alpha) {
+    public void drawString(int x, int y, String text, Fonts font, float alpha) {
+
+    }
+
+    @Override
+    public void drawString(int x, int y, String text, Fonts font, float alpha, float stroke, Color strokeColor) {
 
     }
 
@@ -39,7 +43,7 @@ public class BIRenderer implements Renderer {
     }
 
     @Override
-    public void setFont(byte font) {
+    public void setFont(Fonts font) {
 
     }
 

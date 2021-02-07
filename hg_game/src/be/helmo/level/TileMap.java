@@ -1,12 +1,8 @@
 package be.helmo.level;
 
-import be.helmo.enums.TileTypes;
 import be.helmo.graphics.layers.TileLayer;
-import be.helmo.graphics.Renderer;
-import be.helmo.graphics.TileType;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.main.screen.Screen;
-import be.helmo.manager.debug.Debug;
-import be.helmo.manager.image.PixManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,14 +44,6 @@ public class TileMap {
                 }
             }
         }
-    }
-
-    public TileType getTile(TileTypes index) {
-        if (PixManager.get() == null) {
-            Debug.log("Could not find PixManager !");
-        }
-
-        return PixManager.get().getTile(index);
     }
 
     public Tile[] searchByRange(double xMin, double xMax, double yMin, double yMax) {

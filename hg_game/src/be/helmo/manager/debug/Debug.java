@@ -1,6 +1,6 @@
 package be.helmo.manager.debug;
 
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 
 public class Debug {
 

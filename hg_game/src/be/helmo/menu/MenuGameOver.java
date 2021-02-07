@@ -1,7 +1,6 @@
 package be.helmo.menu;
 
-import be.helmo.enums.GameMenus;
-import be.helmo.enums.GameStates;
+import be.helmo.game.GamePlay;
 import be.helmo.main.screen.Screen;
 import be.helmo.manager.GameStateManager;
 
@@ -13,8 +12,8 @@ public class MenuGameOver extends MenuState {
             "Quitter"
     };
 
-    public MenuGameOver(GameStateManager gsm) {
-        super(gsm);
+    public MenuGameOver(GameStateManager gsm, MenuState previousMenuState) {
+        super(gsm, previousMenuState);
 
         setupMenu();
     }
@@ -37,13 +36,13 @@ public class MenuGameOver extends MenuState {
     @Override
     public void selectOption() {
         if (current == 0) {
-            gsm.setState(GameStates.PLAY);
+            gsm.setState(new GamePlay(gsm));
         }
         else if (current == 1) {
-            gsm.setMenuState(GameMenus.MAIN_MENU);
+            gsm.setMenuState(new MainMenu(gsm, this));
         }
         else if (current == 2) {
-            gsm.setMenuState(GameMenus.QUIT_MENU);
+            gsm.setMenuState(new MenuQuit(gsm, this));
         }
     }
 

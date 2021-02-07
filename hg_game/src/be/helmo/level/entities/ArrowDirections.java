@@ -1,4 +1,4 @@
-package be.helmo.enums;
+package be.helmo.level.entities;
 
 public enum ArrowDirections {
     LEFT,

@@ -1,17 +1,20 @@
-package be.helmo.manager.controls;
+package be.helmo.manager.controls.mouse;
 
-import be.helmo.main.screen.GameWindow;
 import be.helmo.main.screen.Screen;
 import be.helmo.manager.debug.Debug;
 
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 public class Mouse implements MouseListener, MouseWheelListener {
     public static final int NUM_BTN = 5;
 
-    public boolean[] mouseState = new boolean[NUM_BTN];
-    public boolean[] prevMouseState = new boolean[NUM_BTN];
+    private final boolean[] mouseState = new boolean[NUM_BTN];
+    private final boolean[] prevMouseState = new boolean[NUM_BTN];
+    private final int[] syncCheck = new int[NUM_BTN];
 
     public static int   LMB = 0,
                         RMB = 1,
@@ -25,15 +28,24 @@ public class Mouse implements MouseListener, MouseWheelListener {
     public int notches;
 
     private final Screen screen;
-    private final GameWindow window;
 
-    public Mouse(final GameWindow window, final Screen screen) {
+    public Mouse(final Screen screen) {
         this.screen = screen;
-        this.window = window;
+
+        for(int i = 0; i < NUM_BTN; i ++) {
+            mouseState[i] = false;
+            prevMouseState[i] = false;
+            syncCheck[i] = 0;
+        }
     }
 
     public void mouseSet(int i, boolean b) {
         mouseState[i] = b;
+
+        if(b)
+            syncCheck[i] ++;
+        else
+            syncCheck[i] = 0;
 
         if (i == MWU || i == MWD) {
             notches++;
@@ -42,20 +54,21 @@ public class Mouse implements MouseListener, MouseWheelListener {
 
     public void update() {
         try {
-            xMouse = MouseInfo.getPointerInfo().getLocation().x - screen.getGameFrameMarginX() - window.getLocationOnScreen().x;
+            xMouse = MouseInfo.getPointerInfo().getLocation().x - screen.getGameFrameMarginX() - screen.getOnScreenX();
             xMouse *= (double) Screen.WIN_WIDTH / (screen.getGameFrameWidth());
 
-            yMouse = MouseInfo.getPointerInfo().getLocation().y - screen.getGameFrameMarginY() - window.getLocationOnScreen().y;
+            yMouse = MouseInfo.getPointerInfo().getLocation().y - screen.getGameFrameMarginY() - screen.getOnScreenY();
             yMouse *= (double) Screen.WIN_HEIGHT / (screen.getGameFrameHeight());
             yMouse = screen.isFullscreen() ? Screen.WIN_HEIGHT - yMouse : -yMouse;
         }
-        catch (IllegalComponentStateException e) {
+        catch (IllegalComponentStateException | NullPointerException e) {
             xMouse = 0;
             yMouse = 0;
         }
 
-        for (int i = 0; i < NUM_BTN; i++) {
+        for(int i = 0; i < NUM_BTN; i ++) {
             prevMouseState[i] = mouseState[i];
+            syncCheck[i] = 0;
         }
 
         mouseState[MWU] = false;
@@ -64,7 +77,7 @@ public class Mouse implements MouseListener, MouseWheelListener {
         notches = 0;
     }
 
-    public boolean isPressed(int i) { return mouseState[i] && !prevMouseState[i]; }
+    public boolean isPressed(int i) { return mouseState[i] && (!prevMouseState[i] || syncCheck[i] == 1); }
 
     public boolean isDown(int i) {
         return mouseState[i];
@@ -116,7 +129,6 @@ public class Mouse implements MouseListener, MouseWheelListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     @Override
@@ -129,14 +141,12 @@ public class Mouse implements MouseListener, MouseWheelListener {
         final int notches = e.getWheelRotation();
 
         if (notches > 0) {
-            System.out.println(notches);
             mouseSet(Mouse.MWD, true);
-            //Mouse.setNotches(notches);
+            //setNotches(notches);
         }
         else if (notches < 0) {
-            System.out.println(notches);
             mouseSet(Mouse.MWU, true);
-            //Mouse.setNotches(notches);
+            //setNotches(notches);
         }
     }
 }

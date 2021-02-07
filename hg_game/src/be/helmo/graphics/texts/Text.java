@@ -1,16 +1,20 @@
 package be.helmo.graphics.texts;
 
 import be.helmo.graphics.Element;
-import be.helmo.graphics.Renderer;
-import be.helmo.manager.FontManager;
+import be.helmo.graphics.render.Renderer;
+import be.helmo.manager.fonts.FontManager;
+import be.helmo.manager.fonts.Fonts;
 
 import java.awt.*;
+
+import static be.helmo.manager.fonts.FontManager.getTextHeight;
+import static be.helmo.manager.fonts.FontManager.getTextWidth;
 
 public class Text extends Element {
 
     public static final byte ALIGNEMENT_LEFT = 0,
-            ALIGNEMENT_CENTER = 1,
-            ALIGNEMENT_RIGHT = 2;
+                            ALIGNEMENT_CENTER = 1,
+                            ALIGNEMENT_RIGHT = 2;
 
 
     private int xAdjusted = 0;
@@ -18,14 +22,16 @@ public class Text extends Element {
     private String textMsg;//The text
     private String showMsg;
 
-    private final byte font;
+    private final Fonts font;
 
-    private byte align;
+    private Alignement align;
 
     private Color color;//Color
 
+    private float stroke;
+    private Color strokeColor;
 
-    public Text(final int x, final int y, final int duration, final String textString, final Color color, final byte font) {
+    public Text(final int x, final int y, final int duration, final String textString, final Color color, final Fonts font) {
         super(x, y, duration);
 
         this.textMsg = textString == null ? "" : textString;
@@ -36,24 +42,26 @@ public class Text extends Element {
         this.font = font;
 
         this.color = color;
+        this.strokeColor = Color.BLACK;
+        this.stroke = 0.f;
 
-        this.align = ALIGNEMENT_LEFT;
+        this.align = Alignement.LEFT;
     }
 
-    public void setAlignement(final byte align) {
+    public void setAlignement(final Alignement align) {
         if (align != this.align) {
             switch (align) {
-                case ALIGNEMENT_LEFT: {
-                    this.align = ALIGNEMENT_LEFT;
+                case LEFT: {
+                    this.align = Alignement.LEFT;
                     break;
                 }
-                case ALIGNEMENT_CENTER: {
-                    this.align = ALIGNEMENT_CENTER;
+                case CENTER: {
+                    this.align = Alignement.CENTER;
                     setShowXPosition(getShowXPos());
                     break;
                 }
-                case ALIGNEMENT_RIGHT: {
-                    this.align = ALIGNEMENT_RIGHT;
+                case RIGHT: {
+                    this.align = Alignement.RIGHT;
                     setShowXPosition(getShowXPos());
                     break;
                 }
@@ -61,20 +69,22 @@ public class Text extends Element {
         }
     }
 
+    public Alignement getAlignement() { return this.align; }
+
     @Override
     protected void setShowXPosition(final double x) {
         switch (this.align) {
-            case ALIGNEMENT_LEFT:
+            case LEFT:
             default: {
                 super.setShowXPosition(x);
                 break;
             }
-            case ALIGNEMENT_CENTER: {
+            case CENTER: {
                 super.setShowXPosition(x);
                 xAdjusted = FontManager.getCenteredPosition(showMsg, font, (int) x);
                 break;
             }
-            case ALIGNEMENT_RIGHT: {
+            case RIGHT: {
                 super.setShowXPosition(x);
                 xAdjusted = FontManager.getRightenedPosition(showMsg, font, (int) x);
                 break;
@@ -100,6 +110,10 @@ public class Text extends Element {
         return this.color;
     }
 
+    public int getWidth() { return getTextWidth(this.getText(), this.font); }
+
+    public int getHeight() { return getTextHeight(this.getText(), this.font); }
+
     public void setText(final String text) {
         this.textMsg = text != null ? text : "";
         this.showMsg = this.textMsg;
@@ -109,7 +123,15 @@ public class Text extends Element {
     @Override
     public void draw(final Renderer renderer) {
         renderer.setColor(color);
-        renderer.drawString(xAdjusted, (int) getShowYPos(), showMsg, font, getAlpha());
+        renderer.drawString(xAdjusted, (int) getShowYPos(), showMsg, font, getAlpha(), stroke, strokeColor);
+    }
+
+    public void setStroke(float stroke) {
+        this.stroke = Math.abs(stroke);
+    }
+
+    public void setStrokeColor(Color color) {
+        this.strokeColor = color == null ? Color.BLACK : color;
     }
 
     public void setShowText(final String text) {

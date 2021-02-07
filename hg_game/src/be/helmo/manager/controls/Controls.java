@@ -1,11 +1,13 @@
 package be.helmo.manager.controls;
 
-import be.helmo.main.screen.GameWindow;
-import be.helmo.manager.debug.Debug;
+import be.helmo.manager.controls.keyboard.KeyboardTextListener;
+import be.helmo.manager.controls.keyboard.Keys;
+import be.helmo.manager.controls.mouse.CursorObserver;
+import be.helmo.manager.controls.mouse.Mouse;
 
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Controls {
@@ -33,9 +35,13 @@ public class Controls {
     private int pressed, down, released;
 
     private final List<ControlListener> listeners;
+    private final List<CursorObserver> cursorObservers;
+    private final List<KeyboardTextListener> textListeners;
 
     private Controls() {
-        listeners = new ArrayList<>();
+        listeners = new LinkedList<>();
+        cursorObservers = new LinkedList<>();
+        textListeners = new LinkedList<>();
 
         pressed = 0x0;
         down = 0x0;
@@ -53,31 +59,41 @@ public class Controls {
         controls[8] = new Control(KeyEvent.VK_F2, 0);
     }
 
-    public void update(final GameWindow window) {
-
+    public void update() {
         for (Control control : controls)
             control.update(keyboard);
+
+        updateKeys();
+
+        if(keyboard != null && keyboard.isActive())
+            publishControls();
+
+        publishMouse();
 
         if (keyboard != null)
             keyboard.update();
 
         if(mouse != null)
             mouse.update();
-
-        updateKeys();
-        publish();
     }
 
-    private void publish() {
+    private void publishControls() {
         try {
             for (ControlListener listener : listeners) {
                 if(!listener.isPaused())
                     listener.onKeyInputChanged(down, pressed, released);
             }
         }
-        catch(ConcurrentModificationException e) {
+        catch(ConcurrentModificationException ignored) { }
+    }
 
+    private void publishMouse() {
+        try {
+            for(CursorObserver observer : cursorObservers) {
+                observer.update();
+            }
         }
+        catch(ConcurrentModificationException ignored) { }
     }
 
     private void updateKeys() {
@@ -92,6 +108,16 @@ public class Controls {
         }
     }
 
+    public void addKeyboardTextListener(KeyboardTextListener listener) {
+        if (keyboard != null)
+            keyboard.addKeyboardTextListener(listener);
+    }
+
+    public void removeKeyboardTextListener(KeyboardTextListener listener) {
+        if(keyboard != null)
+            keyboard.removeKeyboardTextListener(listener);
+    }
+
     public void removeListener(ControlListener listener) {
         if (listener != null)
             listeners.remove(listener);
@@ -102,12 +128,23 @@ public class Controls {
             listeners.add(listener);
     }
 
+    public void removeObserver(CursorObserver observer) {
+        if (observer != null)
+            cursorObservers.remove(observer);
+    }
+
+    public void addObserver(CursorObserver observer) {
+        if (observer != null && !cursorObservers.contains(observer))
+            cursorObservers.add(observer);
+    }
+
     public boolean isPressed(int button) { return this.mouse != null && this.mouse.isPressed(button); }
 
     public int getNotches() { return this.mouse != null ? mouse.notches : 0; }
 
     public void setKeyboard(Keys key) {
-        this.keyboard = key;
+        if(key != null)
+            this.keyboard = key;
     }
 
     public void setMouse(Mouse mouse) { this.mouse = mouse; }
@@ -142,9 +179,6 @@ public class Controls {
             pressed = keyboard.isPressed(kButton);
             down = keyboard.isDown(kButton);
             released = keyboard.isReleased(kButton);
-
-            if(kButton == KeyEvent.VK_UP && keyboard.isPressed(KeyEvent.VK_UP))
-                Debug.log("Control " + keyboard + " : " + keyboard.isPressed(KeyEvent.VK_UP));
 
             /*if(kButton == KeyEvent.VK_ENTER && down)
                 System.out.println("Enter down");*/

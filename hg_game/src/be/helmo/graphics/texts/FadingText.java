@@ -1,12 +1,15 @@
 package be.helmo.graphics.texts;
 
+import be.helmo.graphics.Speed;
+import be.helmo.manager.fonts.Fonts;
+
 import java.awt.*;
 
 public class FadingText extends Text {
 
-    private final byte speed;
+    private final Speed speed;
 
-    public FadingText(final int x, final int y, final int duration, final byte speed, final String textString, final Color color, final byte font) {
+    public FadingText(final int x, final int y, final int duration, final Speed speed, final String textString, final Color color, final Fonts font) {
         super(x, y, duration, textString, color, font);
 
         this.speed = speed;
@@ -17,15 +20,15 @@ public class FadingText extends Text {
         int currentTick = getTicks();
 
         switch (speed) {
-            case SPEED_SLOW: {
+            case SLOW: {
                 maxTick = 30;
                 break;
             }
-            case SPEED_MEDIUM: {
+            case MEDIUM: {
                 maxTick = 15;
                 break;
             }
-            case SPEED_FAST: {
+            case FAST: {
                 maxTick = 6;
                 break;
             }

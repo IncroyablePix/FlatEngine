@@ -1,15 +1,14 @@
 package be.helmo.game;
 
-import be.helmo.enums.GameMenus;
-import be.helmo.enums.TileTypes;
-import be.helmo.graphics.Renderer;
+import be.helmo.level.map.TileLabel;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.graphics.sprites.ActiveSprite;
 import be.helmo.level.map.Mapping;
-import be.helmo.manager.controls.Clickable;
-import be.helmo.manager.controls.CursorObserver;
+import be.helmo.manager.controls.mouse.Clickable;
+import be.helmo.manager.controls.mouse.CursorObserver;
 import be.helmo.manager.debug.Debug;
 import be.helmo.manager.GameStateManager;
-import be.helmo.manager.image.PixManager;
+import be.helmo.menu.MenuState;
 
 /**
  * GameDebug
@@ -52,34 +51,35 @@ public class GameDebug extends GameState {
 
         activeSprites = new ActiveSprite[16];
 
-        TileTypes[] types = new TileTypes[]{
-                TileTypes.TOP_LEFT,
-                TileTypes.TOP_MIDDLE_1,
-                TileTypes.TOP_MIDDLE_2,
-                TileTypes.TOP_RIGHT,
+        TileLabel[] types = new TileLabel[]{
+                TileLabel.TOP_LEFT,
+                TileLabel.TOP_MIDDLE_1,
+                TileLabel.TOP_MIDDLE_2,
+                TileLabel.TOP_RIGHT,
 
-                TileTypes.TOP_D_LEFT,
-                TileTypes.TOP_D_MIDDLE_1,
-                TileTypes.TOP_D_MIDDLE_2,
-                TileTypes.TOP_D_RIGHT,
+                TileLabel.TOP_D_LEFT,
+                TileLabel.TOP_D_MIDDLE_1,
+                TileLabel.TOP_D_MIDDLE_2,
+                TileLabel.TOP_D_RIGHT,
 
-                TileTypes.DIRT_LEFT_1,
-                TileTypes.DIRT_MIDDLE_1,
-                TileTypes.DIRT_MIDDLE_2,
-                TileTypes.DIRT_RIGHT_1,
+                TileLabel.DIRT_LEFT_1,
+                TileLabel.DIRT_MIDDLE_1,
+                TileLabel.DIRT_MIDDLE_2,
+                TileLabel.DIRT_RIGHT_1,
 
-                TileTypes.DIRT_LEFT_2,
-                TileTypes.DIRT_MIDDLE_3,
-                TileTypes.DIRT_MIDDLE_4,
-                TileTypes.DIRT_RIGHT_2
+                TileLabel.DIRT_LEFT_2,
+                TileLabel.DIRT_MIDDLE_3,
+                TileLabel.DIRT_MIDDLE_4,
+                TileLabel.DIRT_RIGHT_2
         };
 
-        for (int i = 0; i < 16; i++) {
+        /*for (int i = 0; i < 16; i++) {
             activeSprites[i] = new ActiveSprite(i, i, 1, PixManager.get().getTile(types[i]).getImage());
-        }
+        }*/
 
 
         this.co = new CursorObserver();
+        initialized = true;
     }
 
     /**
@@ -107,7 +107,7 @@ public class GameDebug extends GameState {
     }
 
     @Override
-    public void setState(GameMenus menu) {
+    public void setState(MenuState menu) {
     }
 
     @Override

@@ -1,4 +1,4 @@
-package be.helmo.enums;
+package be.helmo.menu;
 
 /**
  * GameMenus
@@ -13,5 +13,6 @@ public enum GameMenus {
     OPTIONS_MENU,
     O_VIDEO_MENU,
     QUIT_MENU,
-    GAME_OVER_MENU
+    GAME_OVER_MENU,
+    ASK_IP_MENU
 }

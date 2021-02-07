@@ -1,14 +1,14 @@
 package be.helmo.game;
 
-import be.helmo.enums.GameMenus;
 import be.helmo.graphics.overimages.Img;
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.main.screen.Screen;
 import be.helmo.manager.image.Content;
 import be.helmo.manager.controls.ControlListener;
 import be.helmo.manager.controls.Controls;
 import be.helmo.manager.GameStateManager;
 import be.helmo.manager.debug.Debug;
+import be.helmo.menu.MenuState;
 
 public class GamePause extends GameState {
     private final Img pause;
@@ -19,7 +19,7 @@ public class GamePause extends GameState {
 
         pause = new Img(710, 100 + (Screen.WIN_HEIGHT / 2), 500, 200, -1, Content.load("/be/helmo/resources/Graphics/Others/PAUSE.png"), 1.0f);
         //Text text = new BouncingText(GameWindow.WIN_WIDTH / 2, GameWindow.WIN_HEIGHT / 2, 150, -1, Text.SPEED_MEDIUM, "PAUSE", Color.BLACK, FontManager.ORATOR_B);
-        //text.setAlignement(Text.ALIGNEMENT_CENTER);
+        //text.setAlignement(Alignement.CENTER);
 
         controlListener = new GamePauseControlsHandler();
         Controls.get().addListener(controlListener);
@@ -32,6 +32,7 @@ public class GamePause extends GameState {
         pause.setVelocity(0, -750.0);
 
         this.controlListener.pause(false);
+        initialized = true;
     }
 
     @Override
@@ -46,7 +47,7 @@ public class GamePause extends GameState {
     }
 
     @Override
-    public void setState(GameMenus menu) {
+    public void setState(MenuState menu) {
     }
 
     @Override

@@ -1,7 +1,6 @@
 package be.helmo.level.entities;
 
 
-import be.helmo.enums.Directions;
 import be.helmo.graphics.sprites.ActiveSprite;
 import be.helmo.level.GameLevel;
 import be.helmo.main.GameThread;

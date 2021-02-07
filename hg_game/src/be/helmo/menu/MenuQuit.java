@@ -1,7 +1,6 @@
 package be.helmo.menu;
 
-import be.helmo.enums.GameMenus;
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.main.screen.Screen;
 import be.helmo.manager.GameStateManager;
 
@@ -12,12 +11,8 @@ public class MenuQuit extends MenuState {
             "Oui"
     };
 
-    private GameMenus previousMenu = GameMenus.NO_MENU;
-
-    public MenuQuit(final GameStateManager gsm, final GameMenus origin) {
-        super(gsm);
-
-        previousMenu = origin;
+    public MenuQuit(final GameStateManager gsm, final MenuState previousMenu) {
+        super(gsm, previousMenu);
 
         setupMenu();
         init();
@@ -56,7 +51,7 @@ public class MenuQuit extends MenuState {
     @Override
     public void selectOption() {
         if (current == 0) {//Retour
-            gsm.setMenuState(previousMenu);
+            goBack();
         }
         else if (current == 1) {//Quitter
             System.exit(0);

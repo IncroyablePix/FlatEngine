@@ -1,6 +1,6 @@
 package be.helmo.level.ornamentation;
 
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.graphics.sprites.ActiveSprite;
 import be.helmo.level.Camera;
 import be.helmo.manager.image.PixManager;

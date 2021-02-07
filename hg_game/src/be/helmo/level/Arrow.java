@@ -1,17 +1,20 @@
 package be.helmo.level;
 
-import be.helmo.enums.ArrowDirections;
-import be.helmo.enums.Directions;
-import be.helmo.graphics.Renderer;
+import be.helmo.level.entities.ArrowDirections;
+import be.helmo.level.entities.Directions;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.graphics.sprites.ActiveSprite;
 import be.helmo.level.entities.Entity;
 import be.helmo.level.entities.EntityMovementListener;
 import be.helmo.level.entities.Player;
 import be.helmo.main.GameThread;
-import be.helmo.manager.image.PixManager;
 import be.helmo.physics.coords.Coords;
 
 public class Arrow implements EntityMovementListener {
+
+    public static final byte    MIN_STRENGTH = 18,
+                                MAX_STRENGTH = 40;
+
     private static final double A_VEL = 180;//45;
 
     private double aVel;
@@ -36,7 +39,7 @@ public class Arrow implements EntityMovementListener {
         };
 
         this.level = level;
-        power = GameLevel.MIN_STRENGTH;
+        power = MIN_STRENGTH;
         angle = 0.0;
 
         xOrigin = 0.0;
@@ -84,12 +87,12 @@ public class Arrow implements EntityMovementListener {
     public void moveArrow(ArrowDirections direction) {
         switch (direction) {
             case UP: {
-                if (power < GameLevel.getPlayerMaxJumpStrength(level))
+                if (power < getPlayerMaxJumpStrength(level))
                     power += GameThread.actionFactor * 30;
                 break;
             }
             case DOWN: {
-                if (power > GameLevel.MIN_STRENGTH) power -= GameThread.actionFactor * 30;
+                if (power > MIN_STRENGTH) power -= GameThread.actionFactor * 30;
                 break;
             }
             case LEFT: {
@@ -104,6 +107,37 @@ public class Arrow implements EntityMovementListener {
                 break;
             }
         }
+    }
+
+    public static byte getPlayerMaxJumpStrength(int level) {
+        byte strength;
+        switch (level / 4) {
+            case 0:
+                strength = 20;
+                break;
+            case 1:
+                strength = 22;
+                break;
+            case 2:
+                strength = 24;
+                break;
+            case 3:
+                strength = 27;
+                break;
+            case 4:
+                strength = 30;
+                break;
+            case 5:
+                strength = 35;
+                break;
+            case 6:
+                strength = 38;
+                break;
+            default:
+                strength = MAX_STRENGTH;
+                break;
+        }
+        return strength;
     }
 
     public void jump(Player player) {
@@ -123,7 +157,6 @@ public class Arrow implements EntityMovementListener {
     @Override
     public void setEntityAttachement(Entity entity) {
         entity.addListener(this);
-
     }
 
     @Override

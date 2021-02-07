@@ -37,7 +37,7 @@ public class Velocity {
     }
 
     public boolean isFalling() {
-        return this.yVel != 0;
+        return this.yVel < 0;
     }
 
     @Override

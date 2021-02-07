@@ -1,6 +1,6 @@
 package be.helmo.graphics.hud;
 
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.graphics.TempElement;
 
 import java.util.*;
@@ -31,12 +31,9 @@ public class Observer {
      * Updates all elements contained while removing the ones that are spoiled.
      */
     public void update() {
-        final Iterator<TempElement> iterator = elements.iterator();
 
         try {
-            while (iterator.hasNext()) {
-                final TempElement element = iterator.next();
-
+            for (TempElement element : elements) {
                 if (element.spoiled()) {
                     elements.remove(element);
                 }

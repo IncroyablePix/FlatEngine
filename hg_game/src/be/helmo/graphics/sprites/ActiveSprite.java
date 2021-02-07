@@ -1,6 +1,6 @@
 package be.helmo.graphics.sprites;
 
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.level.Camera;
 import be.helmo.main.GameThread;
 import be.helmo.physics.coords.Coords;

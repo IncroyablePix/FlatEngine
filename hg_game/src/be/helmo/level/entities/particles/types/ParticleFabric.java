@@ -32,6 +32,9 @@ public interface ParticleFabric {
             case PASCAL_OP_PARTICLE:
                 fabric = new PascalOPParticle(x, y);
                 break;
+            case BALL_PARTICLE:
+                fabric = new BallParticle(x, y);
+                break;
         }
 
         return fabric;
@@ -40,6 +43,7 @@ public interface ParticleFabric {
     enum ParticleType {
         DIRT_PARTICLE,
         STAR_PARTICLE,
-        PASCAL_OP_PARTICLE
+        PASCAL_OP_PARTICLE,
+        BALL_PARTICLE
     }
 }

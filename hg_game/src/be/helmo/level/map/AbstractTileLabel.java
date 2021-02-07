@@ -1,4 +1,4 @@
-package be.helmo.enums;
+package be.helmo.level.map;
 
 /**
  * AbstractTiles
@@ -7,7 +7,7 @@ package be.helmo.enums;
  *
  * @author IncroyablePix
  */
-public enum AbstractTiles {
+public enum AbstractTileLabel {
     T_TOP_LEFT,
     T_TOP_MIDDLE,
     T_TOP_RIGHT,

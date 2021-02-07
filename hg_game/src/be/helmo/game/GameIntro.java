@@ -1,17 +1,18 @@
 package be.helmo.game;
 
-import be.helmo.enums.GameMenus;
-import be.helmo.enums.GameStates;
+import be.helmo.graphics.Speed;
 import be.helmo.graphics.hud.Observer;
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.graphics.texts.TypeText;
 import be.helmo.main.GameThread;
 import be.helmo.main.screen.Screen;
 import be.helmo.manager.audio.AudioManager;
 import be.helmo.manager.controls.ControlListener;
 import be.helmo.manager.controls.Controls;
-import be.helmo.manager.FontManager;
 import be.helmo.manager.GameStateManager;
+import be.helmo.manager.fonts.Fonts;
+import be.helmo.menu.MainMenu;
+import be.helmo.menu.MenuState;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -60,7 +61,7 @@ public class GameIntro extends GameState {
         debug("Loading GameIntro...");
 
         am = AudioManager.get();
-        am.load("/be/helmo/resources/Sound/Music/silhouette.mp3", "intro", true);
+        am.load("/be/helmo/resources/Sound/Music/silhouette.mp3", "intro");
         am.setVolume("intro", -10);
 
         ticks = GameThread.ticks();
@@ -78,7 +79,7 @@ public class GameIntro extends GameState {
         }
 
         observer = new Observer();
-        observer.add(new TypeText(627, 180, END_PART, TypeText.SPEED_MEDIUM, "...a Silhouette Production...", Color.WHITE, FontManager.ORATOR_S));
+        observer.add(new TypeText(627, 180, END_PART, Speed.MEDIUM, "...a Silhouette Production...", Color.WHITE, Fonts.ORATOR_S));
 
         controlsHandler = new GameIntroControlsHandler();
         Controls.get().addListener(controlsHandler);
@@ -93,6 +94,7 @@ public class GameIntro extends GameState {
      */
     public void init() {
         am.play("intro");
+        initialized = true;
     }
 
     /**
@@ -100,14 +102,6 @@ public class GameIntro extends GameState {
      */
     public void update() {
         int checkTick = GameThread.ticksFrom(ticks) - part * END_PART;
-        //Debug.log("" + checkTick);
-
-        if (ticks == END_PART + 1) {
-            observer.add(new TypeText(707, 180, END_PART, TypeText.SPEED_MEDIUM, "...written by [Pix]...", Color.WHITE, FontManager.ORATOR_S));
-			/*TypeText text = new TypeText(GameWindow.WIN_HEIGHT / 2, 180, END_PART, Text.SPEED_MEDIUM, "...written by [Pix]...", Color.WHITE, FontRepo.ORATOR_S);
-			text.setAlignement(Text.ALIGNEMENT_CENTER);
-			observer.add(text);*/
-        }
 
         if (checkTick < FADE_IN) {
             alpha = (1.f * checkTick / FADE_IN);
@@ -119,6 +113,7 @@ public class GameIntro extends GameState {
             if (part == SILHOUETTE) {
                 part = GAME_BG;
                 alpha = 0.f;
+                observer.add(new TypeText(707, 180, END_PART, Speed.MEDIUM, "...written by [Pix]...", Color.WHITE, Fonts.ORATOR_S));
             }
             else if (part == GAME_BG) {
                 exitIntro();
@@ -135,7 +130,7 @@ public class GameIntro extends GameState {
      */
     public void draw(final Renderer renderer) {
         //---FOND
-        renderer.drawRectangle(0, 1080, Screen.WIN_WIDTH, Screen.WIN_HEIGHT, Color.BLACK);
+        renderer.drawRectangle(0, Screen.WIN_HEIGHT, Screen.WIN_WIDTH, Screen.WIN_HEIGHT, Color.BLACK);
         //---IMAGE
         if (part == 0)
             renderer.drawImage(logo[part], 675, 780, 630, 534, alpha);
@@ -153,12 +148,12 @@ public class GameIntro extends GameState {
     private void exitIntro() {
         am.unload("intro");
 
-        gsm.setState(GameStates.MENU);
-        gsm.setMenuState(GameMenus.MAIN_MENU);
+        gsm.setState(new GameMenu(gsm));
+        gsm.setMenuState(new MainMenu(gsm, null));
     }
 
     @Override
-    public void setState(GameMenus menu) {
+    public void setState(MenuState menu) {
     }
 
     @Override
@@ -175,7 +170,7 @@ public class GameIntro extends GameState {
                 if (part == SILHOUETTE) {
                     alpha = 255;
                     ticks -= END_PART;
-                    observer.remove(new TypeText(645, 180, END_PART, TypeText.SPEED_MEDIUM, "...a Silhouette Production...", Color.WHITE, FontManager.ORATOR_S));
+                    observer.remove(new TypeText(645, 180, END_PART, Speed.MEDIUM, "...a Silhouette Production...", Color.WHITE, Fonts.ORATOR_S));
                 }
                 else {
                     exitIntro();

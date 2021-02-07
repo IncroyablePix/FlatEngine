@@ -3,8 +3,10 @@ package be.helmo.manager.audio;
 import be.helmo.manager.debug.Debug;
 
 import javax.sound.sampled.*;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AudioManager {
 
@@ -14,7 +16,7 @@ public class AudioManager {
         return instance;
     }
 
-    private final HashMap<String, Clip> clips;
+    private final Map<String, Clip> clips;
     private final int gap;
 
     private AudioManager() {
@@ -22,14 +24,11 @@ public class AudioManager {
         gap = 0;
     }
 
-    public void load(String s, String n, boolean resource) {
-        if (clips.get(n) != null) return;
+    public void load(String s, String n) {
+        if (clips.get(n) != null)
+            return;
         Clip clip;
-        try(AudioInputStream ais = AudioSystem.getAudioInputStream(this.getClass().getResourceAsStream(s))) {
-            //InputStream bin = new BufferedInputStream(this.getClass().getResourceAsStream(s));
-
-            //AudioInputStream ais = AudioSystem.getAudioInputStream(bin);
-
+        try(AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(this.getClass().getResourceAsStream(s)))) {
             if((clip = loadClipFromAudioStream(ais)) != null)
                 clips.put(n, clip);
         }
@@ -40,7 +39,7 @@ public class AudioManager {
     }
 
     private Clip loadClipFromAudioStream(AudioInputStream ais) {
-        Clip clip = null;
+        Clip clip;
 
         AudioFormat baseFormat = ais.getFormat();
 
@@ -75,6 +74,10 @@ public class AudioManager {
         }
     }
 
+    public boolean isLoaded(String s) {
+        return clips.containsKey(s);
+    }
+
     public void play(String s) {
         play(s, gap);
     }
@@ -82,16 +85,18 @@ public class AudioManager {
     public void play(String s, int i) {
         Clip c = clips.get(s);
 
-        if (c == null)
-            return;
+        if (c == null) {
+            Debug.log("Failed to play " + s);
+        }
+        else {
+            if (c.isRunning())
+                c.stop();
 
-        if (c.isRunning())
-            c.stop();
+            c.setFramePosition(i);
 
-        c.setFramePosition(i);
-
-        while (!c.isRunning()) {
-            c.start();
+            while (!c.isRunning()) {
+                c.start();
+            }
         }
     }
 
@@ -99,7 +104,8 @@ public class AudioManager {
         if (clips.get(s) == null)
             return;
 
-        if (clips.get(s).isRunning()) clips.get(s).stop();
+        if (clips.get(s).isRunning())
+            clips.get(s).stop();
     }
 
     public void resume(String s) {
@@ -119,11 +125,19 @@ public class AudioManager {
     }
 
     public void loop(String s) {
-        loop(s, gap, gap, clips.get(s).getFrameLength() - 1);
+        Clip c = clips.get(s);
+        if(c == null)
+            Debug.log("Failed to play " + s);
+        else
+            loop(s, gap, gap, c.getFrameLength() - 1);
     }
 
     public void loop(String s, int frame) {
-        loop(s, frame, gap, clips.get(s).getFrameLength() - 1);
+        Clip c = clips.get(s);
+        if(c == null)
+            Debug.log("Failed to play " + s);
+        else
+            loop(s, frame, gap, clips.get(s).getFrameLength() - 1);
     }
 
     public void loop(String s, int start, int end) {
@@ -133,15 +147,17 @@ public class AudioManager {
     public void loop(String s, int frame, int start, int end) {
         Clip c = clips.get(s);
 
-        if (c == null)
-            return;
+        if (c == null) {
+            Debug.log("Failed to play " + s);
+        }
+        else {
+            if (c.isRunning())
+                c.stop();
 
-        if (c.isRunning())
-            c.stop();
-
-        c.setLoopPoints(start, end);
-        c.setFramePosition(frame);
-        c.loop(Clip.LOOP_CONTINUOUSLY);
+            c.setLoopPoints(start, end);
+            c.setFramePosition(frame);
+            c.loop(Clip.LOOP_CONTINUOUSLY);
+        }
     }
 
     public void setPosition(String s, int frame) {

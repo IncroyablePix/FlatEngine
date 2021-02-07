@@ -1,7 +1,7 @@
 package be.helmo.graphics.overimages;
 
 import be.helmo.graphics.Element;
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 
 import java.awt.*;
 

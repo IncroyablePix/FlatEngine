@@ -188,11 +188,13 @@ public class Screen {
         return fullscreen ? this.getScreenHeight() : this.yPicture;
     }
 
-    public int getGameFrameMarginX() {
-        return fullscreen ? 0 : this.xMargin;
-    }
+    public int getGameFrameMarginX() { return fullscreen ? 0 : this.xMargin; }
 
     public int getGameFrameMarginY() {
         return fullscreen ? 0 : this.yPicture;
     }
+
+    public int getOnScreenX() { return window.getLocationOnScreen().x; }
+
+    public int getOnScreenY() { return window.getLocationOnScreen().y; }
 }

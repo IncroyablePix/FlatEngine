@@ -43,4 +43,9 @@ public class Coords {
     public int hashCode() {
         return (int) x * (int) y;
     }
+
+    @Override
+    public String toString() {
+        return "[" + x + ", " + y + "]";
+    }
 }

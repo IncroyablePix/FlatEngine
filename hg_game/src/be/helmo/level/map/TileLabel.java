@@ -1,4 +1,4 @@
-package be.helmo.enums;
+package be.helmo.level.map;
 
 /**
  * TileTypes
@@ -7,7 +7,7 @@ package be.helmo.enums;
  *
  * @author IncroyablePix
  */
-public enum TileTypes {
+public enum TileLabel {
     TOP_LEFT,
     TOP_MIDDLE_1,
     TOP_MIDDLE_2,

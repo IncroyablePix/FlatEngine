@@ -1,21 +1,16 @@
 package be.helmo.game;
 
-//import java.awt.Image;
-//import java.awt.image.BufferedImage;
-
-import be.helmo.enums.AbstractTiles;
-import be.helmo.enums.GameMenus;
-import be.helmo.graphics.Element;
+import be.helmo.menu.GameMenus;
+import be.helmo.graphics.Speed;
 import be.helmo.graphics.hud.Observer;
 import be.helmo.graphics.overimages.FadingImg;
 import be.helmo.graphics.overimages.Img;
 import be.helmo.graphics.perlin.CloudyPerlin;
 import be.helmo.graphics.perlin.PerlinNoise;
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.graphics.texts.FadingText;
 import be.helmo.graphics.texts.Text;
 import be.helmo.graphics.texts.TypeText;
-import be.helmo.graphics.TileType;
 import be.helmo.main.GameThread;
 import be.helmo.main.screen.Screen;
 import be.helmo.main.Main;
@@ -24,6 +19,7 @@ import be.helmo.manager.audio.AudioManager;
 import be.helmo.manager.controls.ControlListener;
 import be.helmo.manager.controls.Controls;
 import be.helmo.manager.debug.Debug;
+import be.helmo.manager.fonts.Fonts;
 import be.helmo.manager.image.Content;
 import be.helmo.manager.image.PixManager;
 import be.helmo.menu.*;
@@ -41,12 +37,10 @@ public class GameMenu extends GameState {
     private GameMenus currentMenu, previousMenu;
     private final MenuControlsHandler controlsHandler;
 
-    private final AudioManager am;
-
     private final Observer observer;
     private final int ticks;
 
-    private MenuState menuState;
+    private MenuState menuState, previousMenuState;
 
     private final PerlinNoise background;
     private BufferedImage perlin;
@@ -59,9 +53,7 @@ public class GameMenu extends GameState {
 
         debug("Loading GameMenu...");
 
-        am = AudioManager.get();
-        am.load("/be/helmo/resources/Sound/Music/ambiantlow.mp3", "menu", true);
-        am.setVolume("menu", -10);
+        PixManager.get().loadBigImage(PixManager.TITLE, "TITLE");
 
         background = new PerlinNoise(320, 240, 20, new CloudyPerlin());
 
@@ -71,17 +63,19 @@ public class GameMenu extends GameState {
         //---
         ground = new Img[(Screen.WIN_WIDTH / TILE_SIZE)];
         PixManager pm = PixManager.get();
+        pm.unloadSpriteSheet("TILES");
+        pm.loadSpriteSheet(PixManager.TILES, "TILES", TILE_SIZE, TILE_SIZE);
 
         for (int i = 0; i < ground.length; i++) {
-            TileType tt;
+            BufferedImage image;
             if (i == 0)
-                tt = pm.getTile(PixManager.getTileIndex(AbstractTiles.T_TOP_LEFT));
+                image = pm.getSprite("TILES", 0);
             else if (i == ground.length - 1)
-                tt = pm.getTile(PixManager.getTileIndex(AbstractTiles.T_TOP_RIGHT));
+                image = pm.getSprite("TILES", 3);
             else
-                tt = pm.getTile(PixManager.getTileIndex(AbstractTiles.T_TOP_MIDDLE));
+                image = pm.getSprite("TILES", 2);
 
-            ground[i] = new Img(i * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE, -1, tt.getImage(), 1.f);
+            ground[i] = new Img(i * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE, -1, image, 1.f);
         }
         //cloud.attachDebug(debug);
 
@@ -98,9 +92,14 @@ public class GameMenu extends GameState {
     }
 
     public void init() {
+        AudioManager am = AudioManager.get();
         am.stop("intro");
-        am.loop("menu");
 
+        am = AudioManager.get();
+        am.load("/be/helmo/resources/Sound/Music/ambiantlow.mp3", "menu");
+        am.setVolume("menu", -10);
+        am.loop("menu");
+        initialized = true;
         //bg = Content.MENUBG[0][0];
     }
 
@@ -108,9 +107,9 @@ public class GameMenu extends GameState {
         //Debug.log("updating GameMenu " + GameThread.ticksFrom(ticks) + " current ticks : " + GameThread.ticks());
 
         if (GameThread.ticksFrom(ticks) == 60) {
-            FadingImg logo = new FadingImg(710, 960, 500, 200, -1, Element.SPEED_SLOW, Content.load("/be/helmo/resources/Graphics/Others/TITLE.png"));
-            Text version = new FadingText(1140, 780, -1, Element.SPEED_SLOW, Main.VERSION, Color.PINK, FontManager.COURIER_T);
-            Text bugs = new TypeText(1200, 750, 500, Element.SPEED_FAST, Main.BUGS, Color.BLACK, FontManager.COURIER_T);
+            FadingImg logo = new FadingImg(710, 960, 500, 200, -1, Speed.SLOW, Content.load(PixManager.TITLE));
+            Text version = new FadingText(1140, 780, -1, Speed.SLOW, Main.VERSION, Color.PINK, Fonts.COURIER_T);
+            Text bugs = new TypeText(1200, 750, 500, Speed.FAST, Main.BUGS, Color.BLACK, Fonts.COURIER_T);
 
             observer.add(logo);
             observer.add(version);
@@ -139,13 +138,10 @@ public class GameMenu extends GameState {
 
         cloud.draw(renderer);
 
-        if (menuState != null) {
+        if(menuState != null)
             menuState.draw(renderer);
-        }
 
-        if (observer != null) {
-            observer.draw(renderer);
-        }
+        observer.draw(renderer);
     }
 
     private void selectOption() {
@@ -161,56 +157,15 @@ public class GameMenu extends GameState {
         return menu == GameMenus.O_VIDEO_MENU;
     }
 
-    public void setState(GameMenus menu) {
-        if (currentMenu != GameMenus.NO_MENU) {
-            //cloud.move((int) (1.5 * GameWindow.WIN_WIDTH), 591, 300);
-            //background.setSmoothAcceleration(0.001, 0.01);
-        }
+    public void setState(MenuState menu) {
+        previousMenuState = menuState;
 
-        if (!subMenu(currentMenu, menu)) {
-            previousMenu = currentMenu;
-        }
-        else if (menu == GameMenus.OPTIONS_MENU && isOptionsMenu(currentMenu)) {
+        if(previousMenuState instanceof MenuVideo)
             gsm.saveSettings();
-        }
-        unloadMenu(previousMenu);
 
-        currentMenu = menu;
+        unloadMenu();
 
-        switch (menu) {
-            case NO_MENU: {
-                menuState = null;//new MenuState(gsm);
-                break;
-            }
-            case MAIN_MENU: {
-                menuState = new MainMenu(gsm);
-                break;
-            }
-            case OPTIONS_MENU: {
-                menuState = new MenuOptions(gsm, previousMenu);
-                break;
-            }
-            case O_VIDEO_MENU: {
-                menuState = new MenuVideo(gsm, GameMenus.OPTIONS_MENU);
-                break;
-            }
-            case QUIT_MENU: {
-                menuState = new MenuQuit(gsm, previousMenu);
-                break;
-            }
-            case GAME_OVER_MENU: {
-                menuState = new MenuGameOver(gsm);
-                break;
-            }
-			/*case FAKE_MENU: {
-				menuStates[menu] = new FakeMenu(gsm);
-				break;
-			}
-			case GAME_OVER: {
-				menuStates[menu] = new GameOver(this);
-				break;
-			}*/
-        }
+        menuState = menu;
 
         menuState.init();
     }
@@ -220,8 +175,11 @@ public class GameMenu extends GameState {
         Controls.get().removeListener(controlsHandler);
     }
 
-    public void unloadMenu(GameMenus menu) {
-        menuState = null;
+    public void unloadMenu() {
+        if(menuState != null) {
+            menuState.terminate();
+            menuState = null;
+        }
     }
 
     private class MenuControlsHandler implements ControlListener {

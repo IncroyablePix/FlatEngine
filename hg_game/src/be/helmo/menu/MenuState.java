@@ -1,16 +1,18 @@
 package be.helmo.menu;
 
+import be.helmo.graphics.Speed;
 import be.helmo.graphics.hud.Observer;
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.graphics.TempElement;
+import be.helmo.graphics.texts.Alignement;
 import be.helmo.graphics.texts.BouncingText;
-import be.helmo.graphics.texts.Text;
 import be.helmo.main.screen.Screen;
-import be.helmo.manager.controls.Clickable;
-import be.helmo.manager.controls.CursorListener;
-import be.helmo.manager.controls.CursorObserver;
-import be.helmo.manager.FontManager;
+import be.helmo.manager.controls.Controls;
+import be.helmo.manager.controls.mouse.Clickable;
+import be.helmo.manager.controls.mouse.CursorListener;
+import be.helmo.manager.controls.mouse.CursorObserver;
 import be.helmo.manager.GameStateManager;
+import be.helmo.manager.fonts.Fonts;
 
 import java.awt.*;
 
@@ -35,10 +37,13 @@ public abstract class MenuState {
     protected Clickable[] menuClickables;
     protected String[] options;
 
-    public MenuState(final GameStateManager gsm) {
+    private final MenuState previousMenu;
+
+    public MenuState(final GameStateManager gsm, MenuState previousMenu) {
         this.gsm = gsm;
+        this.previousMenu = previousMenu;
         this.observer = new Observer();
-        this.co = new CursorObserver();
+        Controls.get().addObserver(this.co = new CursorObserver());
         this.ticks = 0;
 
         init();
@@ -51,8 +56,6 @@ public abstract class MenuState {
         ticks++;
 
         observer.update();
-
-        co.update();
     }
 
     public void draw(final Renderer renderer) {
@@ -65,6 +68,8 @@ public abstract class MenuState {
 
     public abstract void selectOption();
 
+    public void terminate() { Controls.get().removeObserver(this.co); }
+
     public abstract void switchOption(final boolean forward);
 
     protected final void addNotification(final String text) {
@@ -72,8 +77,8 @@ public abstract class MenuState {
             observer.remove(notif);
         }
 
-        notif = new BouncingText(Screen.WIN_WIDTH - 20, 20, 150, 150, Text.SPEED_MEDIUM, text, Color.RED, FontManager.ORATOR_T);
-        notif.setAlignement(Text.ALIGNEMENT_RIGHT);
+        notif = new BouncingText(Screen.WIN_WIDTH - 20, 20, 150, 150, Speed.MEDIUM, text, Color.RED, Fonts.ORATOR_T);
+        notif.setAlignement(Alignement.RIGHT);
         observer.add(notif);
     }
 
@@ -85,9 +90,14 @@ public abstract class MenuState {
         observer.add(element);
     }
 
+    protected final void goBack() {
+        if(this.previousMenu != null) {
+            gsm.setMenuState(this.previousMenu);
+        }
+    }
+
     public int getMenuOptions() {
         return options.length;
-
     }
 
     public int getMenuChoice() {
@@ -123,6 +133,11 @@ public abstract class MenuState {
             menuElements[previous].selectElement(false);
             menuElements[current].selectElement(true);
         }
+    }
+
+    protected void addClickable(Clickable clickable) {
+        if(clickable != null)
+            co.add(clickable);
     }
 
     protected class MenuListener implements CursorListener {

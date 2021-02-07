@@ -1,11 +1,9 @@
 package be.helmo.level.entities;
 
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.graphics.sprites.ActiveSprite;
 import be.helmo.level.Camera;
 import be.helmo.level.GameLevel;
-import be.helmo.main.GameThread;
-import be.helmo.manager.debug.Debug;
 import be.helmo.physics.ColParams;
 import be.helmo.physics.Collider;
 import be.helmo.physics.Collision;
@@ -34,11 +32,9 @@ public class Pickup extends Entity implements Pickupable {
     }
 
     @Override
-    public void onCollision(Collision... collisions) {
-        for(Collision collision : collisions) {
-            if(collision.getDirection() == Collision.CollisionDirection.BOTTOM) {
-                jump = true;
-            }
+    public void onCollision(Collision collision) {
+        if(collision.getDirection() == Collision.CollisionDirection.BOTTOM) {
+            jump = true;
         }
     }
 

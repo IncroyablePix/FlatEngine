@@ -1,8 +1,10 @@
 package be.helmo.physics;
 
+import be.helmo.level.Platform;
 import be.helmo.level.Tile;
 import be.helmo.level.TileMap;
 import be.helmo.level.entities.Pickup;
+import be.helmo.level.entities.Player;
 import be.helmo.manager.debug.Debug;
 
 public class TileCollider implements Collider {
@@ -12,15 +14,15 @@ public class TileCollider implements Collider {
         this.tileMap = tileMap;
     }
 
-    public PosAndVel checkX(Physical physical) {
+    public PosAndVel checkX(Physical physical, ColParams colParams) {
         final double eX = physical.getX(), eY = physical.getY(),
                 vX = physical.getVelX(), vY = physical.getVelY();
 
         double x, xVel;
         double xToCheck;
 
-        /*if(!col.isRight() && !col.isLeft())
-            return new PosAndVel(eX, vX);*/
+        if(colParams.isNoCol())
+            return new PosAndVel(eX, vX);
 
         if (vX > 0)
             xToCheck = eX + physical.getSizeX();
@@ -41,20 +43,22 @@ public class TileCollider implements Collider {
             if (match.isNoCol())
                 continue;
 
-            if (xVel > 0 && col.isRight()) {
+            if (xVel > 0 && col.isRight() && colParams.isRight()) {
                 if (x + physical.getSizeX() > Math.floor(match.getX())) {
                     x = Math.floor(match.getX()) - physical.getSizeX();
                     xVel = 0;
                     physical.onCollision(new Collision(match,
                             Collision.CollisionDirection.RIGHT));
+                    break;
                 }
             }
-            else if (xVel < 0 && col.isLeft()) {
+            else if (xVel < 0 && col.isLeft() && colParams.isLeft()) {
                 if (x < Math.ceil(match.getX())) {
                     x = Math.ceil(match.getX());
                     xVel = 0;
                     physical.onCollision(new Collision(match,
                             Collision.CollisionDirection.LEFT));
+                    break;
                 }
             }
         }
@@ -62,12 +66,15 @@ public class TileCollider implements Collider {
         return new PosAndVel(x, xVel);
     }
 
-    public PosAndVel checkY(Physical physical) {
+    public PosAndVel checkY(Physical physical, ColParams colParams) {
         final double eX = physical.getX(), eY = physical.getY(),
                 vX = physical.getVelX(), vY = physical.getVelY();
 
         double y, yVel;
         double yToCheck;
+
+        if(colParams.isNoCol())
+            return new PosAndVel(eY, vY);
 
         if (vY > 0)
             yToCheck = eY;// + physical.getSizeY();
@@ -80,7 +87,7 @@ public class TileCollider implements Collider {
         yVel = vY;
 
         Tile[] matches = this.tileMap.searchByRange(
-                eX, eX + physical.getSizeX(), yToCheck, yToCheck);
+                eX + (physical.getSizeX() / 4), eX + (physical.getSizeX() / 2), yToCheck, yToCheck);
 
         for (Tile match : matches) {
             ColParams col = match.getColParams();
@@ -88,20 +95,30 @@ public class TileCollider implements Collider {
             if (match.isNoCol())
                 continue;
 
-            if (yVel > 0 && col.isTop()) {
+            if (yVel > 0 && col.isTop() && colParams.isTop()) {
                 if (y + physical.getSizeY() > match.getY()) {
                     y = match.getY() - physical.getSizeY();
                     yVel = 0;
                     physical.onCollision(new Collision(match,
                             Collision.CollisionDirection.TOP));
+                    break;
                 }
             }
-            else if (yVel < 0 && col.isBottom()) {
+            else if (yVel < 0 && col.isBottom() && colParams.isBottom()) {
+                /*if(camera.getY() + camera.getHeight() + getSizeY() >= getY() &&
+                    getY() >= camera.getY() - getSizeY())*/
                 if (y < match.getY() + match.getSizeY()) {
+
                     y = match.getY() + match.getSizeY();
-                    yVel = 0;
+
+                    if(vY > -15.0)
+                        yVel = 0;
+                    else
+                        yVel = -vY / physical.getBounciness();
+
                     physical.onCollision(new Collision(match,
                             Collision.CollisionDirection.BOTTOM));
+                    break;
                 }
             }
         }
@@ -114,7 +131,7 @@ public class TileCollider implements Collider {
         final double eX = physical.getX(), eY = physical.getY();
 
         Tile[] matches = this.tileMap.searchByRange(
-                eX, eX + physical.getSizeX(), eY - physical.getSizeY(), eY);
+                eX + (physical.getSizeX() / 4), eX + (physical.getSizeX() / 2), eY - physical.getSizeY(), eY);
 
         for (Tile match : matches) {
             ColParams col = match.getColParams();

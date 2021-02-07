@@ -1,5 +1,7 @@
 package be.helmo.graphics;
 
+import be.helmo.graphics.render.Renderer;
+
 /**
  * TempElement
  * <p>

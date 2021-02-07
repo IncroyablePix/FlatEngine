@@ -1,12 +1,14 @@
 package be.helmo.graphics.overimages;
 
+import be.helmo.graphics.Speed;
+
 import java.awt.*;
 
 public class FadingImg extends Img {
 
-    private final byte speed;
+    private final Speed speed;
 
-    public FadingImg(final int x, final int y, final int width, final int height, final int duration, final byte speed, final Image img) {
+    public FadingImg(final int x, final int y, final int width, final int height, final int duration, final Speed speed, final Image img) {
         super(x, y, width, height, duration, img, 1.f);
 
         this.speed = speed;
@@ -17,15 +19,15 @@ public class FadingImg extends Img {
         int currentTick = getTicks();
 
         switch (speed) {
-            case SPEED_SLOW: {
+            case SLOW: {
                 maxTick = 30;
                 break;
             }
-            case SPEED_MEDIUM: {
+            case MEDIUM: {
                 maxTick = 15;
                 break;
             }
-            case SPEED_FAST: {
+            case FAST: {
                 maxTick = 6;
                 break;
             }

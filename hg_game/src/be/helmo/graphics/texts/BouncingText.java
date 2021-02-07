@@ -1,24 +1,27 @@
 package be.helmo.graphics.texts;
 
+import be.helmo.graphics.Speed;
+import be.helmo.manager.fonts.Fonts;
+
 import java.awt.*;
 
 public class BouncingText extends Text {
 
-    public BouncingText(final int x, final int y, final int height, final int duration, final byte speed, final String textString, final Color color, final byte font) {
+    public BouncingText(final int x, final int y, final int height, final int duration, final Speed speed, final String textString, final Color color, final Fonts font) {
         super(x, y, duration, textString, color, font);
 
         setShowYPosition(y + height);
 
         switch (speed) {
-            case SPEED_SLOW: {
+            case SLOW: {
                 setYVel(-2);
                 break;
             }
-            case SPEED_MEDIUM: {
+            case MEDIUM: {
                 setYVel(-4);
                 break;
             }
-            case SPEED_FAST: {
+            case FAST: {
                 setYVel(-6);
                 break;
             }

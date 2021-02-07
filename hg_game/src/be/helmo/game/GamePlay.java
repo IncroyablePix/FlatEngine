@@ -1,8 +1,7 @@
 package be.helmo.game;
 
-import be.helmo.enums.GameMenus;
-import be.helmo.enums.GameStates;
-import be.helmo.graphics.Renderer;
+import be.helmo.menu.GameMenus;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.level.GameLevel;
 import be.helmo.level.LevelEndListener;
 import be.helmo.main.GameThread;
@@ -11,6 +10,8 @@ import be.helmo.manager.controls.ControlListener;
 import be.helmo.manager.controls.Controls;
 import be.helmo.manager.debug.Debug;
 import be.helmo.manager.GameStateManager;
+import be.helmo.menu.MenuGameOver;
+import be.helmo.menu.MenuState;
 
 public class GamePlay extends GameState implements LevelEndListener {
 
@@ -28,7 +29,7 @@ public class GamePlay extends GameState implements LevelEndListener {
         ticks = GameThread.ticks();
         debug("Loading GamePlay...");
 
-        AudioManager.get().load("/be/helmo/resources/Sound/SFX/drawning.wav", "drawn", true);
+        AudioManager.get().load("/be/helmo/resources/Sound/SFX/drawning.wav", "drawn");
     }
 
     @Override
@@ -37,6 +38,7 @@ public class GamePlay extends GameState implements LevelEndListener {
 
         level = new GameLevel(1);
         subscribe(level);
+        initialized = true;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class GamePlay extends GameState implements LevelEndListener {
     }
 
     @Override
-    public void setState(GameMenus menu) {
+    public void setState(MenuState menu) {
     }
 
     @Override
@@ -81,8 +83,8 @@ public class GamePlay extends GameState implements LevelEndListener {
 
     @Override
     public void onGameOver() {
-        gsm.setState(GameStates.MENU);
-        gsm.setMenuState(GameMenus.GAME_OVER_MENU);
+        gsm.setState(new GameMenu(gsm));
+        gsm.setMenuState(new MenuGameOver(gsm, null));
     }
 
     private class GamePlayControlsHandler implements ControlListener {

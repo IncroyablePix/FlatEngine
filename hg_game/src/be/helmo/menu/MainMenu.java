@@ -1,23 +1,24 @@
 package be.helmo.menu;
 
 
-import be.helmo.enums.GameMenus;
-import be.helmo.enums.GameStates;
-import be.helmo.graphics.Renderer;
+import be.helmo.game.GameDebug;
+import be.helmo.game.GamePlay;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.main.screen.Screen;
 import be.helmo.manager.GameStateManager;
 
 public class MainMenu extends MenuState {
 
     private final String[] options = {
-            "Commencer",
+            "Jeu en solo",
+            "Multijoueur",
             "Options",
             "Quitter"/*,
 		"Debug"*/
     };
 
-    public MainMenu(final GameStateManager gsm) {
-        super(gsm);
+    public MainMenu(final GameStateManager gsm, final MenuState previousMenuState) {
+        super(gsm, previousMenuState);
 
         setupMenu();
     }
@@ -66,16 +67,19 @@ public class MainMenu extends MenuState {
     @Override
     public void selectOption() {
         if (current == 0) {
-            gsm.setState(GameStates.PLAY);
+            gsm.setState(new GamePlay(gsm));
         }
-        else if (current == 1) {
-            gsm.setMenuState(GameMenus.OPTIONS_MENU);
+        else if(current == 1) {
+            gsm.setMenuState(new MenuAskIP(gsm, this));
         }
         else if (current == 2) {
-            gsm.setMenuState(GameMenus.QUIT_MENU);
+            gsm.setMenuState(new MenuOptions(gsm, this));
         }
         else if (current == 3) {
-            gsm.setState(GameStates.DEBUG);
+            gsm.setMenuState(new MenuQuit(gsm, this));
+        }
+        else if (current == 4) {
+            gsm.setState(new GameDebug(gsm));
         }
     }
 

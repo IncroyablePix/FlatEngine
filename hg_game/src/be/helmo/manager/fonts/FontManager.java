@@ -1,4 +1,4 @@
-package be.helmo.manager;
+package be.helmo.manager.fonts;
 
 import be.helmo.main.screen.Screen;
 import be.helmo.main.screen.ResolutionChangedListener;
@@ -26,9 +26,11 @@ import java.util.Arrays;
  */
 public class FontManager implements ResolutionChangedListener {
 
+    private final static Canvas c = new Canvas();
+
     public static final int TINY_SIZE = 20,
-            TEXT_SIZE = 38,
-            MENU_SIZE = 66;
+                            TEXT_SIZE = 38,
+                            MENU_SIZE = 66;
 
     public static final byte COURIER_T = 0,
             COURIER_S = 1,
@@ -69,8 +71,11 @@ public class FontManager implements ResolutionChangedListener {
      * @param fontid The ID of the Font
      * @return The Font
      */
-    public Font getFont(final byte fontid) {
-        return fonts.length > fontid && fontid >= 0 ? fonts[fontid] : fonts[0];
+    public Font getFont(final Fonts fontid) {
+        if(fontid != null)
+            return fonts.length > fontid.ordinal() ? fonts[fontid.ordinal()] : fonts[0];
+        else
+            return null;
     }
 
     /**
@@ -86,9 +91,9 @@ public class FontManager implements ResolutionChangedListener {
 
     private static Font createFont(String fontName, int size) {
         Font newFont = null;
-        Font ttfBase = null;
+        Font ttfBase;
         try {
-            InputStream myStream = null;
+            InputStream myStream;
             myStream = Content.class.getResourceAsStream("/be/helmo/resources/Fonts/" + fontName + ".ttf");
             ttfBase = Font.createFont(Font.TRUETYPE_FONT, myStream);
             newFont = ttfBase.deriveFont(Font.PLAIN, size);
@@ -106,8 +111,8 @@ public class FontManager implements ResolutionChangedListener {
      * @param fontid The ID.
      * @return The Font.
      */
-    public static Font getOriginalFont(final byte fontid) {
-        return ORIGINALS.length > fontid && fontid >= 0 ? ORIGINALS[fontid] : ORIGINALS[0];
+    public static Font getOriginalFont(final Fonts fontid) {
+        return ORIGINALS.length > fontid.ordinal() ? ORIGINALS[fontid.ordinal()] : ORIGINALS[0];
     }
 
     /**
@@ -118,11 +123,22 @@ public class FontManager implements ResolutionChangedListener {
      * @param x    The x position around which the text has to be written.
      * @return The new x position to write the text at.
      */
-    public static int getCenteredPosition(final String text, final byte font, final int x) {
-        Canvas c = new Canvas();
+    public static int getCenteredPosition(final String text, final Fonts font, final int x) {
         FontMetrics fm = c.getFontMetrics(getOriginalFont(font));
 
         return (x - (fm.stringWidth(text) / 2));
+    }
+
+    public static int getTextWidth(final String text, final Fonts font) {
+        FontMetrics fm = c.getFontMetrics(getOriginalFont(font));
+
+        return fm.stringWidth(text);
+    }
+
+    public static int getTextHeight(final String text, final Fonts font) {
+        FontMetrics fm = c.getFontMetrics(getOriginalFont(font));
+
+        return fm.getMaxAscent();
     }
 
 
@@ -134,8 +150,7 @@ public class FontManager implements ResolutionChangedListener {
      * @param x    The x position next to which the text has to be written.
      * @return The new x position to write the text at.
      */
-    public static int getRightenedPosition(final String text, final byte font, final int x) {
-        Canvas c = new Canvas();
+    public static int getRightenedPosition(final String text, final Fonts font, final int x) {
         FontMetrics fm = c.getFontMetrics(getOriginalFont(font));
 
         return (x - fm.stringWidth(text));

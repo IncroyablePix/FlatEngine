@@ -1,10 +1,13 @@
-package be.helmo.graphics;
+package be.helmo.graphics.render;
 
 import be.helmo.main.screen.Screen;
 import be.helmo.main.screen.GameWindow;
-import be.helmo.manager.FontManager;
+import be.helmo.manager.fonts.FontManager;
+import be.helmo.manager.fonts.Fonts;
 
 import java.awt.*;
+import java.awt.font.GlyphVector;
+import java.awt.image.BufferedImage;
 
 /**
  * Drawer for Graphics2D
@@ -18,7 +21,7 @@ public class GRenderer implements Renderer {
     Graphics2D g2;
 
     Color color;
-    byte font;
+    Fonts font;
     float alpha;
 
     FontManager fonts;
@@ -33,7 +36,7 @@ public class GRenderer implements Renderer {
         this.fonts = fonts;
 
         color = Color.WHITE;
-        font = 0;
+        font = Fonts.COURIER_T;
         alpha = 1.f;
     }
 
@@ -51,10 +54,12 @@ public class GRenderer implements Renderer {
      * @param text The text to draw
      * @param font Font to use - previous will be used if null
      */
-    public void drawString(final int x, final int y, final String text, final byte font) {
-        setFont(font);
-        setAlpha(1.f);
-        g2.drawString(text, getPosX(x), getPosY(y));
+    public void drawString(final int x, final int y, final String text, final Fonts font) {
+        if(text != null && text.length() > 0) {
+            setFont(font);
+            setAlpha(1.f);
+            g2.drawString(text, getPosX(x), getPosY(y));
+        }
     }
 
     /**
@@ -66,16 +71,62 @@ public class GRenderer implements Renderer {
      * @param font  Font to use - previous will be used if null
      * @param alpha Transparency
      */
-    public void drawString(int x, int y, final String text, final byte font, final float alpha) {
-        setFont(font);
-        setAlpha(alpha);
+    public void drawString(int x, int y, final String text, final Fonts font, final float alpha) {
+        if(text != null && text.length() > 0) {
+            setFont(font);
+            setAlpha(alpha);
 
-        for (String line : text.split("\n")) {
-            g2.drawString(line, getPosX(x), getPosY(y));
-            y -= g2.getFontMetrics().getHeight();
+            for (String line : text.split("\n")) {
+                g2.drawString(line, getPosX(x), getPosY(y));
+                y -= g2.getFontMetrics().getHeight();
+            }
+
+            //g2.drawString(text, getPosX(x), getPosY(y));
         }
+    }
 
-        //g2.drawString(text, getPosX(x), getPosY(y));
+    @Override
+    public void drawString(int x, int y, final String text, final Fonts font, final float alpha, final float stroke, final Color strokeColor) {
+        if(text != null && text.length() > 0) {
+            if (stroke <= 0) {
+                drawString(x, y, text, font, alpha);
+            }
+            else {
+                String[] lines = text.split("\n");
+                int roundedStroke = (int) Math.ceil(stroke);
+                int width = FontManager.getTextWidth(text, font);
+                int height = FontManager.getTextHeight(text, font) + roundedStroke;
+
+                BufferedImage image = new BufferedImage(width, (height * lines.length) + roundedStroke, BufferedImage.TYPE_INT_ARGB);
+                Graphics2D g2 = image.createGraphics();
+                g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                Font cFont = fonts.getFont(font);
+                g2.setStroke(new BasicStroke(stroke));
+
+                for (int i = 0; i < lines.length; i++) {
+                    g2.translate(0, height);
+                    writeLine(lines[i], cFont, g2, this.color, strokeColor);
+                }
+
+                drawImage(image, x, y + height, image.getWidth(), image.getHeight(), 1.f);
+            }
+        }
+    }
+
+    private void writeLine(String text, Font font, Graphics2D g2, Color fillColor, Color strokeColor) {
+        GlyphVector gv = font.createGlyphVector(g2.getFontRenderContext(), text);
+
+        for(int i = 0, j = text.length(); i < j; i ++) {
+            Shape shape = gv.getGlyphOutline(i);
+
+            g2.setPaint(fillColor);
+            g2.fill(shape);
+
+            g2.setColor(strokeColor);
+            g2.draw(shape);
+        }
     }
 
     public void drawRectangle(final int x, final int y, final int width, final int height, final Color color) {
@@ -87,11 +138,6 @@ public class GRenderer implements Renderer {
         setAlpha(alpha);
         g2.drawImage(img, getPosX(x), getPosY(y), getWidth(width), getHeight(height), null);
     }
-
-	/*public void drawSprite(final Sprite sprite, final double x, final double y, final int width, final int height, final float alpha) {
-		setAlpha(alpha);
-		g2.drawImage(sprite.getImage(), getPosX((int) x), getPosY((int) y), getWidth(width), getHeight(height), null);
-	}*/
 
     private int getPosX(int x) {
         return (int) (x * gw.getXFactor());
@@ -109,7 +155,7 @@ public class GRenderer implements Renderer {
         return (int) Math.ceil((height) * gw.getYFactor());
     }
 
-    public void setFont(final byte font) {
+    public void setFont(final Fonts font) {
         if (this.font != font) {
             g2.setFont(fonts.getFont(this.font = font));
         }

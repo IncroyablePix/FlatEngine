@@ -1,7 +1,7 @@
 package be.helmo.physics;
 
 public interface Physical {
-    void onCollision(Collision... collisions);
+    void onCollision(Collision collision);
 
     double getX();
 
@@ -20,4 +20,6 @@ public interface Physical {
     double getSizeX();
 
     double getSizeY();
+
+    double getBounciness();
 }

@@ -1,23 +1,18 @@
 package be.helmo.main.screen;
 
 import be.helmo.graphics.DisplayThread;
-import be.helmo.graphics.GRenderer;
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.GRenderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.main.GameThread;
 import be.helmo.main.Main;
 import be.helmo.manager.controls.Controls;
-import be.helmo.manager.controls.Keys;
-import be.helmo.manager.controls.Mouse;
-import be.helmo.manager.debug.Debug;
-import be.helmo.manager.FontManager;
+import be.helmo.manager.controls.keyboard.Keys;
+import be.helmo.manager.controls.mouse.Mouse;
+import be.helmo.manager.fonts.FontManager;
 import be.helmo.manager.GameStateManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 
 @SuppressWarnings("serial")
@@ -53,7 +48,7 @@ public class GameWindow extends JPanel implements ResolutionChangedListener {
         display = new DisplayThread(this);
 
         keys = new Keys();
-        mouse = new Mouse(this, screen);
+        mouse = new Mouse(screen);
 
         Controls.get().setKeyboard(keys);
         Controls.get().setMouse(mouse);
@@ -135,7 +130,7 @@ public class GameWindow extends JPanel implements ResolutionChangedListener {
 
     public void update() {
         gsm.update();
-        Controls.get().update(this);
+        Controls.get().update();
     }
 
     public void render() {

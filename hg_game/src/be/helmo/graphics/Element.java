@@ -1,15 +1,11 @@
 package be.helmo.graphics;
 
+import be.helmo.graphics.render.Renderer;
 import be.helmo.main.GameThread;
 import be.helmo.manager.debug.Debug;
 import be.helmo.physics.coords.Velocity;
 
 public abstract class Element implements TempElement {
-
-    public static final byte SPEED_SLOW = 0,
-            SPEED_MEDIUM = 1,
-            SPEED_FAST = 2;
-
     private static final double INCREASE_FACTOR = 900.0;
 
     private double xPos;//Positions on the screen
@@ -260,7 +256,7 @@ public abstract class Element implements TempElement {
         Debug.log(text);
     }
 
-    protected void setAlpha(final float alpha) {
+    public void setAlpha(final float alpha) {
         this.alpha = alpha < 0 ? Math.abs(alpha) : alpha;
     }
 

@@ -1,6 +1,6 @@
 package be.helmo.graphics.layers;
 
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.level.Camera;
 
 public class TileLayer extends Layer {

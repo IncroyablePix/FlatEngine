@@ -2,7 +2,9 @@ package be.helmo.physics;
 
 import be.helmo.level.GameLevel;
 import be.helmo.level.Platform;
+import be.helmo.level.entities.Player;
 import be.helmo.main.GameThread;
+import be.helmo.manager.debug.Debug;
 import be.helmo.physics.coords.Coords;
 import be.helmo.physics.coords.Velocity;
 
@@ -17,6 +19,7 @@ public class Physics {
     private final Coords coords;
 
     private double mass;
+    private double bounciness;
 
     public Physics(final Velocity vel, final Coords coords, final GameLevel gl, final Physical physicalObject) {
         if (vel == null || coords == null)
@@ -29,20 +32,21 @@ public class Physics {
         this.physicalObject = physicalObject;
 
         this.mass = 15.0;
+        this.bounciness = 2.5;
 
         this.vel = vel;
         this.coords = coords;
     }
 
-    public void move(Collider collider) {
-        PosAndVel xPv = treatX(collider);
-        PosAndVel yPv = treatY(collider);
+    public void move(Collider collider, ColParams colParams) {
+        PosAndVel xPv = treatX(collider, colParams);
+        PosAndVel yPv = treatY(collider, colParams);
 
         this.vel.setMovingVector(xPv.getVel(), yPv.getVel());
         this.coords.setPos(xPv.getPos(), yPv.getPos());
     }
 
-    private PosAndVel treatX(Collider collider) {
+    private PosAndVel treatX(Collider collider, ColParams colParams) {
         double x = coords.getX();
         double xVel = vel.getxVel();
 
@@ -59,11 +63,11 @@ public class Physics {
         vel.setxVel(xVel);
 
         return collider != null ?
-                collider.checkX(physicalObject) :
+                collider.checkX(physicalObject, colParams) :
                 new PosAndVel(x, xVel);
     }
 
-    private PosAndVel treatY(Collider collider) {
+    private PosAndVel treatY(Collider collider, ColParams colParams) {
         double y = coords.getY();
         double yVel = vel.getyVel();
 
@@ -80,15 +84,16 @@ public class Physics {
             }
         }
         else {
-            if (!collider.isOnTopOfSomething(physicalObject))
+            if (colParams.isNoCol() || !collider.isOnTopOfSomething(physicalObject)) {
                 yVel = -mass * GameThread.actionFactor;
+            }
         }
 
         coords.setY(y);
         vel.setyVel(yVel);
 
         return collider != null ?
-                collider.checkY(physicalObject) :
+                collider.checkY(physicalObject, colParams) :
                 new PosAndVel(y, yVel);
     }
 
@@ -96,8 +101,14 @@ public class Physics {
         this.mass = mass;
     }
 
+    public double getBounciness() { return this.bounciness; }
+
     private double getPlatformY(final Platform platform) {
-        return platform == null ? Double.POSITIVE_INFINITY : (Platform.isPlatformWater(platform) ? 0.0 : platform.getY() + 1);
+        return platform == null ?
+                Double.POSITIVE_INFINITY :
+                (Platform.isPlatformWater(platform) ?
+                        0.0 :
+                        platform.getY() + 1);
     }
 
     /*public Platform yCollide(double yMin, double yMax) {

@@ -1,7 +1,6 @@
 package be.helmo.menu;
 
-import be.helmo.enums.GameMenus;
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.main.screen.Screen;
 import be.helmo.manager.GameStateManager;
 import be.helmo.menu.options.Resolution;
@@ -17,16 +16,11 @@ public class MenuVideo extends MenuState {
             "Précédent"
     };
 
-    @SuppressWarnings("unused")
-    private GameMenus previousMenu = GameMenus.NO_MENU;
-
     private Resolution[] resolutions;
     private int currentResolution;
 
-    public MenuVideo(final GameStateManager gsm, GameMenus origin) {
-        super(gsm);
-
-        previousMenu = origin;
+    public MenuVideo(final GameStateManager gsm, MenuState previousMenu) {
+        super(gsm, previousMenu);
 
         setupResolutions();
         setupMenu();
@@ -113,7 +107,7 @@ public class MenuVideo extends MenuState {
             addNotification("Affichage changé: " + options[2]);
         }
         else if (current == 3) {//Précédent
-            gsm.setMenuState(GameMenus.OPTIONS_MENU);
+            goBack();
         }
     }
 

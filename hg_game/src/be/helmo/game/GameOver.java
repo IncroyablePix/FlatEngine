@@ -1,8 +1,8 @@
 package be.helmo.game;
 
-import be.helmo.enums.GameMenus;
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
 import be.helmo.manager.GameStateManager;
+import be.helmo.menu.MenuState;
 
 public class GameOver extends GameState {
 
@@ -28,7 +28,7 @@ public class GameOver extends GameState {
     }
 
     @Override
-    public void setState(GameMenus menu) {
+    public void setState(MenuState menu) {
     }
 
     @Override

@@ -1,19 +1,20 @@
 package be.helmo.graphics.texts;
 
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
+import be.helmo.graphics.Speed;
+import be.helmo.manager.fonts.Fonts;
 
 import java.awt.*;
 
 public class TypeText extends Text {
-    private final byte speed;
+    private final Speed speed;
     private boolean displayable;
 
-    public TypeText(final int x, final int y, final int duration, final byte speed, final String textString, final Color color, final byte font) {
+    public TypeText(final int x, final int y, final int duration, final Speed speed, final String textString, final Color color, final Fonts font) {
         super(x, y, duration, textString, color, font);
 
         this.speed = speed;
         displayable = false;
-
     }
 
     private void updateText() {
@@ -24,15 +25,15 @@ public class TypeText extends Text {
         String text = "";
 
         switch (speed) {
-            case SPEED_SLOW: {
+            case SLOW: {
                 letters = 0.5f;
                 break;
             }
-            case SPEED_MEDIUM: {
+            case MEDIUM: {
                 letters = 1.f;
                 break;
             }
-            case SPEED_FAST: {
+            case FAST: {
                 letters = 1.5f;
             }
         }

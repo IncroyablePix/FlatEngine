@@ -1,6 +1,7 @@
 package be.helmo.graphics.texts;
 
-import be.helmo.graphics.Renderer;
+import be.helmo.graphics.render.Renderer;
+import be.helmo.manager.fonts.Fonts;
 
 import java.awt.*;
 
@@ -8,7 +9,7 @@ public class TearingText extends Text {
 
     private final Text[] parts;
 
-    public TearingText(int x, int y, int duration, String textString, Color color, byte font) {
+    public TearingText(int x, int y, int duration, String textString, Color color, Fonts font) {
         super(x, y, duration, textString, color, font);
 
         parts = new Text[textString.length()];
