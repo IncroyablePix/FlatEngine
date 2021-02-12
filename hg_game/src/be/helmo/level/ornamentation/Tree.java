@@ -1,6 +1,6 @@
 package be.helmo.level.ornamentation;
 
-import be.helmo.graphics.sprites.ActiveSprite;
+import com.c4nn4.graphics.sprites.ActiveSprite;
 
 public class Tree extends Ornament {
 

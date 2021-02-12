@@ -1,18 +1,19 @@
 package be.helmo.game;
 
-import be.helmo.graphics.Speed;
-import be.helmo.graphics.hud.Observer;
-import be.helmo.graphics.render.Renderer;
-import be.helmo.graphics.texts.TypeText;
-import be.helmo.main.GameThread;
-import be.helmo.main.screen.Screen;
-import be.helmo.manager.audio.AudioManager;
-import be.helmo.manager.controls.ControlListener;
-import be.helmo.manager.controls.Controls;
-import be.helmo.manager.GameStateManager;
-import be.helmo.manager.fonts.Fonts;
+import com.c4nn4.game.GameState;
+import com.c4nn4.graphics.Speed;
+import com.c4nn4.graphics.hud.Observer;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.graphics.texts.TypeText;
+import com.c4nn4.main.GameThread;
+import com.c4nn4.main.screen.Screen;
+import com.c4nn4.manager.audio.AudioManager;
+import com.c4nn4.manager.controls.ControlListener;
+import com.c4nn4.manager.controls.Controls;
+import com.c4nn4.manager.GameStateManager;
+import com.c4nn4.manager.fonts.Fonts;
 import be.helmo.menu.MainMenu;
-import be.helmo.menu.MenuState;
+import com.c4nn4.menu.MenuState;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

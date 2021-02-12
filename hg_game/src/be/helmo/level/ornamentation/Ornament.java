@@ -1,9 +1,9 @@
 package be.helmo.level.ornamentation;
 
-import be.helmo.graphics.render.Renderer;
-import be.helmo.graphics.sprites.ActiveSprite;
-import be.helmo.level.Camera;
-import be.helmo.manager.image.PixManager;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.graphics.sprites.ActiveSprite;
+import com.c4nn4.game.level.Camera;
+import com.c4nn4.manager.image.PixManager;
 
 public abstract class Ornament implements Comparable<Ornament> {
 

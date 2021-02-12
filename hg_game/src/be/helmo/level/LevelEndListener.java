@@ -5,5 +5,5 @@ public interface LevelEndListener {
 
     void onLevelFinishes(int level);
 
-    void subscribe(GameLevel level);
+    void subscribe(HigherGroundsLevel level);
 }

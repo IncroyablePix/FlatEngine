@@ -1,11 +1,8 @@
 package be.helmo.physics;
 
-import be.helmo.level.Platform;
-import be.helmo.level.Tile;
+import com.c4nn4.physics.environment.Tile;
 import be.helmo.level.TileMap;
-import be.helmo.level.entities.Pickup;
-import be.helmo.level.entities.Player;
-import be.helmo.manager.debug.Debug;
+import com.c4nn4.physics.*;
 
 public class TileCollider implements Collider {
     private final TileMap tileMap;

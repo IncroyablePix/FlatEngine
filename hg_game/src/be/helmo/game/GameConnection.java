@@ -1,19 +1,20 @@
 package be.helmo.game;
 
-import be.helmo.graphics.texts.Alignement;
-import be.helmo.graphics.Speed;
-import be.helmo.graphics.hud.Observer;
-import be.helmo.graphics.render.Renderer;
-import be.helmo.graphics.texts.BlinkingText;
-import be.helmo.graphics.texts.Text;
-import be.helmo.graphics.texts.TypeText;
-import be.helmo.main.screen.Screen;
-import be.helmo.manager.GameStateManager;
-import be.helmo.manager.debug.Debug;
-import be.helmo.manager.fonts.Fonts;
-import be.helmo.manager.network.connection.ConnectionInitializer;
-import be.helmo.manager.network.connection.ConnectionManager;
-import be.helmo.menu.MenuState;
+import com.c4nn4.game.GameState;
+import com.c4nn4.graphics.Speed;
+import com.c4nn4.graphics.texts.Alignement;
+import com.c4nn4.graphics.hud.Observer;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.graphics.texts.BlinkingText;
+import com.c4nn4.graphics.texts.Text;
+import com.c4nn4.graphics.texts.TypeText;
+import com.c4nn4.main.screen.Screen;
+import com.c4nn4.manager.GameStateManager;
+import com.c4nn4.manager.debug.Debug;
+import com.c4nn4.manager.fonts.Fonts;
+import com.c4nn4.manager.network.connection.ConnectionInitializer;
+import com.c4nn4.manager.network.connection.ConnectionManager;
+import com.c4nn4.menu.MenuState;
 
 import java.awt.*;
 import java.net.Socket;

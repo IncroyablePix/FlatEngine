@@ -1,12 +1,12 @@
 package be.helmo.level.entities.particles;
 
-import be.helmo.graphics.render.Renderer;
-import be.helmo.graphics.TempElement;
-import be.helmo.level.Camera;
-import be.helmo.level.GameLevel;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.graphics.TempElement;
+import com.c4nn4.game.level.Camera;
+import be.helmo.level.HigherGroundsLevel;
 import be.helmo.level.entities.particles.types.ParticleFabric;
-import be.helmo.main.GameThread;
-import be.helmo.physics.Collider;
+import com.c4nn4.main.GameThread;
+import com.c4nn4.physics.Collider;
 
 public class Particles implements TempElement {
     private final Camera camera;
@@ -18,7 +18,7 @@ public class Particles implements TempElement {
 
     private float alpha;
 
-    public Particles(final GameLevel level, int amount, int lifeSpan, boolean physical, ParticleFabric fabric) {
+    public Particles(final HigherGroundsLevel level, int amount, int lifeSpan, boolean physical, ParticleFabric fabric) {
         this.particles = new Particle[amount];
 
         this.camera = level.getCamera();
@@ -32,7 +32,7 @@ public class Particles implements TempElement {
         createParticles(level, amount, physical, fabric);
     }
 
-    private void createParticles(GameLevel level, int amount, boolean physical, ParticleFabric type) {
+    private void createParticles(HigherGroundsLevel level, int amount, boolean physical, ParticleFabric type) {
         for(int i = 0; i < amount; i ++) {
             particles[i] = new Particle(level, type.getActiveSprite(), type.getPosX(), type.getPosY(), type.getSizeX(), type.getSizeY(), physical);
             particles[i].setMass(type.getMass());

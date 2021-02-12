@@ -1,28 +1,34 @@
 package be.helmo.game;
 
-import be.helmo.menu.GameMenus;
-import be.helmo.graphics.render.Renderer;
-import be.helmo.level.GameLevel;
+import be.helmo.level.HigherGroundsLevel;
+import com.c4nn4.game.GameState;
+import com.c4nn4.graphics.overimages.Img;
+import com.c4nn4.graphics.render.Renderer;
 import be.helmo.level.LevelEndListener;
-import be.helmo.main.GameThread;
-import be.helmo.manager.audio.AudioManager;
-import be.helmo.manager.controls.ControlListener;
-import be.helmo.manager.controls.Controls;
-import be.helmo.manager.debug.Debug;
-import be.helmo.manager.GameStateManager;
+import com.c4nn4.main.GameThread;
+import com.c4nn4.main.screen.Screen;
+import com.c4nn4.manager.audio.AudioManager;
+import com.c4nn4.manager.controls.ControlListener;
+import com.c4nn4.manager.controls.Controls;
+import com.c4nn4.manager.debug.Debug;
+import com.c4nn4.manager.GameStateManager;
 import be.helmo.menu.MenuGameOver;
-import be.helmo.menu.MenuState;
+import com.c4nn4.manager.image.Content;
+import com.c4nn4.menu.MenuState;
 
 public class GamePlay extends GameState implements LevelEndListener {
 
     private final int ticks;
 
-    private GameLevel level;
+    private HigherGroundsLevel level;
+    private final Img pause;
+    private boolean paused;
     private final GamePlayControlsHandler controlsHandler;
 
     public GamePlay(GameStateManager gsm) {
         super(gsm);
 
+        pause = new Img(710, 100 + (Screen.WIN_HEIGHT / 2), 500, 200, -1, Content.load("/be/helmo/resources/Graphics/Others/PAUSE.png"), 1.0f);
         controlsHandler = new GamePlayControlsHandler();
         Controls.get().addListener(controlsHandler);
 
@@ -30,13 +36,14 @@ public class GamePlay extends GameState implements LevelEndListener {
         debug("Loading GamePlay...");
 
         AudioManager.get().load("/be/helmo/resources/Sound/SFX/drawning.wav", "drawn");
+        paused = false;
     }
 
     @Override
     public void init() {
         Debug.log("GamePlay init");
 
-        level = new GameLevel(1);
+        level = new HigherGroundsLevel(1);
         subscribe(level);
         initialized = true;
     }
@@ -47,8 +54,13 @@ public class GamePlay extends GameState implements LevelEndListener {
         //gsm.setMenuState(GameMenus.MAIN_MENU);
         this.controlsHandler.pause(false);
 
-        if (level != null) {
-            level.update();
+        if(this.controlsHandler.paused) {
+            pause.update();
+        }
+        else {
+            if (level != null) {
+                level.update();
+            }
         }
     }
 
@@ -56,6 +68,9 @@ public class GamePlay extends GameState implements LevelEndListener {
     public void draw(final Renderer renderer) {
         if (level != null) {
             level.draw(renderer);
+        }
+        if(this.controlsHandler.paused) {
+            pause.draw(renderer);
         }
     }
 
@@ -71,13 +86,13 @@ public class GamePlay extends GameState implements LevelEndListener {
     @Override
     public void onLevelFinishes(int level) {
         Debug.log("Level " + level + " cleared");
-        this.level = new GameLevel(level + 1);
+        this.level = new HigherGroundsLevel(level + 1);
         this.level.subscribe(this);
         AudioManager.get().unload("cat");
     }
 
     @Override
-    public void subscribe(GameLevel level) {
+    public void subscribe(HigherGroundsLevel level) {
         level.subscribe(this);
     }
 
@@ -93,19 +108,26 @@ public class GamePlay extends GameState implements LevelEndListener {
         @Override
         public void onKeyInputChanged(int down, int pressed, int released) {
             if ((pressed & Controls.PAUSE) == Controls.PAUSE) {
-                Debug.log("Pause in play");
-                gsm.setPaused(true);
-                pause(true);
+                setPaused(!GamePlay.this.paused);
+                //pause(true);
             }
         }
 
         @Override
         public boolean isPaused() {
-            return paused;
+            return false;
         }
 
         @Override
         public void pause(boolean paused) {
+            this.paused = false;
+        }
+    }
+
+    private void setPaused(boolean paused) {
+        if(paused) {
+            pause.setPos(710, Screen.WIN_HEIGHT + 200);
+            pause.setVelocity(0, -750.0);
             this.paused = paused;
         }
     }

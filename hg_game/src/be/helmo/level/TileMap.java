@@ -1,14 +1,16 @@
 package be.helmo.level;
 
-import be.helmo.graphics.layers.TileLayer;
-import be.helmo.graphics.render.Renderer;
-import be.helmo.main.screen.Screen;
+import com.c4nn4.game.level.Camera;
+import com.c4nn4.graphics.layers.TileLayer;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.main.screen.Screen;
+import com.c4nn4.physics.environment.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static be.helmo.level.GameLevel.BOARD;
-import static be.helmo.level.GameLevel.BOARD_HEIGHT;
+import static be.helmo.level.HigherGroundsLevel.BOARD;
+import static be.helmo.level.HigherGroundsLevel.BOARD_HEIGHT;
 
 public class TileMap {
 

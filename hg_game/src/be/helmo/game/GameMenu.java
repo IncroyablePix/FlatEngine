@@ -1,33 +1,35 @@
 package be.helmo.game;
 
 import be.helmo.menu.GameMenus;
-import be.helmo.graphics.Speed;
-import be.helmo.graphics.hud.Observer;
-import be.helmo.graphics.overimages.FadingImg;
-import be.helmo.graphics.overimages.Img;
-import be.helmo.graphics.perlin.CloudyPerlin;
-import be.helmo.graphics.perlin.PerlinNoise;
-import be.helmo.graphics.render.Renderer;
-import be.helmo.graphics.texts.FadingText;
-import be.helmo.graphics.texts.Text;
-import be.helmo.graphics.texts.TypeText;
-import be.helmo.main.GameThread;
-import be.helmo.main.screen.Screen;
+import com.c4nn4.game.GameState;
+import com.c4nn4.graphics.Speed;
+import com.c4nn4.graphics.hud.Observer;
+import com.c4nn4.graphics.overimages.FadingImg;
+import com.c4nn4.graphics.overimages.Img;
+import com.c4nn4.graphics.perlin.CloudyPerlin;
+import com.c4nn4.graphics.perlin.PerlinNoise;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.graphics.texts.FadingText;
+import com.c4nn4.graphics.texts.Text;
+import com.c4nn4.graphics.texts.TypeText;
+import com.c4nn4.main.GameThread;
+import com.c4nn4.main.screen.Screen;
 import be.helmo.main.Main;
-import be.helmo.manager.*;
-import be.helmo.manager.audio.AudioManager;
-import be.helmo.manager.controls.ControlListener;
-import be.helmo.manager.controls.Controls;
-import be.helmo.manager.debug.Debug;
-import be.helmo.manager.fonts.Fonts;
-import be.helmo.manager.image.Content;
-import be.helmo.manager.image.PixManager;
+import com.c4nn4.manager.*;
+import com.c4nn4.manager.audio.AudioManager;
+import com.c4nn4.manager.controls.ControlListener;
+import com.c4nn4.manager.controls.Controls;
+import com.c4nn4.manager.debug.Debug;
+import com.c4nn4.manager.fonts.Fonts;
+import com.c4nn4.manager.image.Content;
+import com.c4nn4.manager.image.PixManager;
 import be.helmo.menu.*;
+import com.c4nn4.menu.MenuState;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static be.helmo.manager.image.PixManager.TILE_SIZE;
+import static com.c4nn4.manager.image.PixManager.TILE_SIZE;
 
 //import be.helmo.Graphics.Perlin.PerlinNoise;
 //import be.helmo.Graphics.Perlin.SpacePerlin;
@@ -146,15 +148,6 @@ public class GameMenu extends GameState {
 
     private void selectOption() {
         menuState.selectOption();
-    }
-
-    private boolean subMenu(GameMenus parent, GameMenus child) {
-        return (parent == GameMenus.O_VIDEO_MENU && child == GameMenus.OPTIONS_MENU) ||
-                (parent == GameMenus.OPTIONS_MENU && child == GameMenus.O_VIDEO_MENU);
-    }
-
-    private boolean isOptionsMenu(final GameMenus menu) {
-        return menu == GameMenus.O_VIDEO_MENU;
     }
 
     public void setState(MenuState menu) {

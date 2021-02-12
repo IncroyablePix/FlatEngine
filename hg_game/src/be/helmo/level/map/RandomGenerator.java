@@ -1,10 +1,10 @@
 package be.helmo.level.map;
 
 import be.helmo.level.Platform;
-import be.helmo.level.Tile;
+import com.c4nn4.physics.ColParams;
+import com.c4nn4.physics.environment.Tile;
 import be.helmo.level.TileMap;
-import be.helmo.manager.image.PixManager;
-import be.helmo.physics.ColParams;
+import com.c4nn4.manager.image.PixManager;
 
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
@@ -115,16 +115,16 @@ public class RandomGenerator implements MapGenerator {
                 byte surrounded = isTileSurrounded(tileMap, i, yEdge);
 
                 if (i == xEdge) {
-                    setTile(((surrounded & TOP) == TOP ? AbstractTileLabel.T_D_TOP_LEFT :
-                            AbstractTileLabel.T_TOP_LEFT), tileMap, col, i, yEdge);
+                    setTile(((surrounded & TOP) == TOP ? HigherGroundsTileLabel.T_D_TOP_LEFT :
+                            HigherGroundsTileLabel.T_TOP_LEFT), tileMap, col, i, yEdge);
                 }
                 else if (i == end - 1) {
-                    setTile(((surrounded & TOP) == TOP ? AbstractTileLabel.T_D_TOP_RIGHT :
-                            AbstractTileLabel.T_TOP_RIGHT), tileMap, col, i, yEdge);
+                    setTile(((surrounded & TOP) == TOP ? HigherGroundsTileLabel.T_D_TOP_RIGHT :
+                            HigherGroundsTileLabel.T_TOP_RIGHT), tileMap, col, i, yEdge);
                 }
                 else {
-                    setTile(((surrounded & TOP) == TOP ? AbstractTileLabel.T_D_TOP_MIDDLE :
-                            AbstractTileLabel.T_TOP_MIDDLE), tileMap, col, i, yEdge);
+                    setTile(((surrounded & TOP) == TOP ? HigherGroundsTileLabel.T_D_TOP_MIDDLE :
+                            HigherGroundsTileLabel.T_TOP_MIDDLE), tileMap, col, i, yEdge);
                 }
             }
 
@@ -138,28 +138,28 @@ public class RandomGenerator implements MapGenerator {
 
                             if (x == xEdge) {
                                 if (surrounded != 0) {
-                                    setTile(((surrounded & LEFT) == LEFT ? AbstractTileLabel.T_DIRT_MIDDLE :
-                                            AbstractTileLabel.T_DIRT_LEFT), tileMap, noCol, x, y);
+                                    setTile(((surrounded & LEFT) == LEFT ? HigherGroundsTileLabel.T_DIRT_MIDDLE :
+                                            HigherGroundsTileLabel.T_DIRT_LEFT), tileMap, noCol, x, y);
 
                                     reformatCells(tileMap, x, y, surrounded, (byte) 0xFF);
                                 }
                                 else {
-                                    setTile(AbstractTileLabel.T_DIRT_LEFT, tileMap, col, x, y);
+                                    setTile(HigherGroundsTileLabel.T_DIRT_LEFT, tileMap, col, x, y);
                                 }
                             }
                             else if (x == end - 1) {
                                 if (surrounded != 0) {
-                                    setTile(((surrounded & RIGHT) == RIGHT ? AbstractTileLabel.T_DIRT_MIDDLE :
-                                            AbstractTileLabel.T_DIRT_RIGHT), tileMap, noCol, x, y);
+                                    setTile(((surrounded & RIGHT) == RIGHT ? HigherGroundsTileLabel.T_DIRT_MIDDLE :
+                                            HigherGroundsTileLabel.T_DIRT_RIGHT), tileMap, noCol, x, y);
 
                                     reformatCells(tileMap, x, y, surrounded, (byte) (0xFF));
                                 }
                                 else {
-                                    setTile(AbstractTileLabel.T_DIRT_RIGHT, tileMap, noCol, x, y);
+                                    setTile(HigherGroundsTileLabel.T_DIRT_RIGHT, tileMap, noCol, x, y);
                                 }
                             }
                             else {
-                                setTile(AbstractTileLabel.T_DIRT_MIDDLE, tileMap, noCol, x, y);
+                                setTile(HigherGroundsTileLabel.T_DIRT_MIDDLE, tileMap, noCol, x, y);
 
                                 if (surrounded != 0) {
                                     reformatCells(tileMap, x, y, surrounded, BOTTOM);
@@ -193,34 +193,34 @@ public class RandomGenerator implements MapGenerator {
             byte col = ColParams.BOTTOM, noCol = ColParams.NO_COL;
 
             if ((surrounding & LEFT) == LEFT) {
-                if (tileMap.getTile(x - 1, y).getAbstractType() == AbstractTileLabel.T_DIRT_RIGHT)
-                    setTile(AbstractTileLabel.T_DIRT_MIDDLE, tileMap, noCol, x - 1, y);
-                else if (tileMap.getTile(x - 1, y).getAbstractType() == AbstractTileLabel.T_TOP_RIGHT)
-                    setTile(AbstractTileLabel.T_D_TOP_RIGHT, tileMap, col, x - 1, y);
+                if (tileMap.getTile(x - 1, y).getAbstractType() == HigherGroundsTileLabel.T_DIRT_RIGHT)
+                    setTile(HigherGroundsTileLabel.T_DIRT_MIDDLE, tileMap, noCol, x - 1, y);
+                else if (tileMap.getTile(x - 1, y).getAbstractType() == HigherGroundsTileLabel.T_TOP_RIGHT)
+                    setTile(HigherGroundsTileLabel.T_D_TOP_RIGHT, tileMap, col, x - 1, y);
             }
             if ((surrounding & RIGHT) == RIGHT) {
-                if (tileMap.getTile(x + 1, y).getAbstractType() == AbstractTileLabel.T_DIRT_LEFT)
-                    setTile(AbstractTileLabel.T_DIRT_MIDDLE, tileMap, noCol, x + 1, y);
-                else if (tileMap.getTile(x + 1, y).getAbstractType() == AbstractTileLabel.T_TOP_LEFT)
-                    setTile(AbstractTileLabel.T_D_TOP_LEFT, tileMap, col, x + 1, y);
+                if (tileMap.getTile(x + 1, y).getAbstractType() == HigherGroundsTileLabel.T_DIRT_LEFT)
+                    setTile(HigherGroundsTileLabel.T_DIRT_MIDDLE, tileMap, noCol, x + 1, y);
+                else if (tileMap.getTile(x + 1, y).getAbstractType() == HigherGroundsTileLabel.T_TOP_LEFT)
+                    setTile(HigherGroundsTileLabel.T_D_TOP_LEFT, tileMap, col, x + 1, y);
             }
             if ((surrounding & BOTTOM) == BOTTOM) {
-                if (tileMap.getTile(x, y - 1).getAbstractType() == AbstractTileLabel.T_TOP_LEFT)
-                    setTile(AbstractTileLabel.T_D_TOP_LEFT, tileMap, col, x, y - 1);
-                else if (tileMap.getTile(x, y - 1).getAbstractType() == AbstractTileLabel.T_TOP_RIGHT)
-                    setTile(AbstractTileLabel.T_D_TOP_RIGHT, tileMap, col, x, y - 1);
-                else if (tileMap.getTile(x, y - 1).getAbstractType() == AbstractTileLabel.T_TOP_MIDDLE)
-                    setTile(AbstractTileLabel.T_D_TOP_MIDDLE, tileMap, col, x, y - 1);
+                if (tileMap.getTile(x, y - 1).getAbstractType() == HigherGroundsTileLabel.T_TOP_LEFT)
+                    setTile(HigherGroundsTileLabel.T_D_TOP_LEFT, tileMap, col, x, y - 1);
+                else if (tileMap.getTile(x, y - 1).getAbstractType() == HigherGroundsTileLabel.T_TOP_RIGHT)
+                    setTile(HigherGroundsTileLabel.T_D_TOP_RIGHT, tileMap, col, x, y - 1);
+                else if (tileMap.getTile(x, y - 1).getAbstractType() == HigherGroundsTileLabel.T_TOP_MIDDLE)
+                    setTile(HigherGroundsTileLabel.T_D_TOP_MIDDLE, tileMap, col, x, y - 1);
             }
         }
     }
 
-    private void setTile(AbstractTileLabel atl, TileMap tileMap, byte col, int x, int y) {
+    private void setTile(HigherGroundsTileLabel atl, TileMap tileMap, byte col, int x, int y) {
         BufferedImage tt = getTile(getTileIndex(atl));
         tileMap.setTile(new Tile(tt, col, atl, x, y, 1.0, 1.0), x, y);
     }
 
-    public static TileLabel getTileIndex(AbstractTileLabel type) {
+    public static TileLabel getTileIndex(HigherGroundsTileLabel type) {
         TileLabel tile;
 
         switch (type) {

@@ -1,9 +1,10 @@
 package be.helmo.game;
 
-import be.helmo.graphics.render.Renderer;
-import be.helmo.manager.debug.Debug;
-import be.helmo.manager.GameStateManager;
-import be.helmo.menu.MenuState;
+import com.c4nn4.game.GameState;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.manager.debug.Debug;
+import com.c4nn4.manager.GameStateManager;
+import com.c4nn4.menu.MenuState;
 
 /**
  * GameCinematic

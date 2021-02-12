@@ -2,10 +2,10 @@ package be.helmo.level.entities.controlables;
 
 import be.helmo.level.entities.Directions;
 import be.helmo.level.entities.Player;
-import be.helmo.manager.controls.ControlListener;
-import be.helmo.manager.controls.Controls;
-import be.helmo.manager.debug.Debug;
-import be.helmo.manager.debug.DebugInfo;
+import com.c4nn4.manager.controls.ControlListener;
+import com.c4nn4.manager.controls.Controls;
+import com.c4nn4.manager.debug.Debug;
+import com.c4nn4.manager.debug.DebugInfo;
 
 public class PlayerJump implements ControlListener {
 

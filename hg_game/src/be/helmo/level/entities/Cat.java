@@ -1,11 +1,13 @@
 package be.helmo.level.entities;
 
 
-import be.helmo.graphics.sprites.ActiveSprite;
-import be.helmo.level.GameLevel;
-import be.helmo.main.GameThread;
-import be.helmo.physics.Collider;
-import be.helmo.physics.coords.Coords;
+import com.c4nn4.graphics.sprites.ActiveSprite;
+import be.helmo.level.HigherGroundsLevel;
+import com.c4nn4.main.GameThread;
+import com.c4nn4.physics.Collider;
+import com.c4nn4.physics.coords.Coords;
+import com.c4nn4.physics.environment.Entity;
+import com.c4nn4.physics.environment.EntityMovementListener;
 
 /**
  * Cat
@@ -16,7 +18,7 @@ import be.helmo.physics.coords.Coords;
  */
 public class Cat extends DirectionEntity implements EntityMovementListener {
 
-    public Cat(GameLevel gl, ActiveSprite left, ActiveSprite right, double x, double y) {
+    public Cat(HigherGroundsLevel gl, ActiveSprite left, ActiveSprite right, double x, double y) {
         super(gl, left, right, x, y);
     }
 

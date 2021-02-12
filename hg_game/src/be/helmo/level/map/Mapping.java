@@ -1,14 +1,15 @@
 package be.helmo.level.map;
 
-import be.helmo.graphics.render.Renderer;
-import be.helmo.graphics.sprites.ActiveSprite;
+import com.c4nn4.game.level.Camera;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.graphics.sprites.ActiveSprite;
 import be.helmo.level.*;
 import be.helmo.level.ornamentation.Ornament;
 import be.helmo.level.ornamentation.Tree;
-import be.helmo.manager.image.PixManager;
-import be.helmo.physics.Collider;
+import com.c4nn4.manager.image.PixManager;
+import com.c4nn4.physics.Collider;
 import be.helmo.physics.TileCollider;
-import be.helmo.physics.coords.Coords;
+import com.c4nn4.physics.coords.Coords;
 
 import java.awt.image.BufferedImage;
 import java.util.*;
@@ -29,7 +30,6 @@ public class Mapping {
     private final int width;
     private final int height;
 
-    private final GameLevel gl;
     private final Camera camera;
 
     private final MapGenerator generator;
@@ -40,11 +40,10 @@ public class Mapping {
     private final List<Platform> platforms;
     private final List<Ornament> ornament;
 
-    public Mapping(GameLevel gl, int width, int height, Camera camera, MapGenerator generator) {
+    public Mapping(int width, int height, Camera camera, MapGenerator generator) {
         this.width = width;
         this.height = height;
 
-        this.gl = gl;
         this.camera = camera;
 
         this.generator = generator;

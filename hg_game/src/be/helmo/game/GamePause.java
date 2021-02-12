@@ -1,14 +1,15 @@
 package be.helmo.game;
 
-import be.helmo.graphics.overimages.Img;
-import be.helmo.graphics.render.Renderer;
-import be.helmo.main.screen.Screen;
-import be.helmo.manager.image.Content;
-import be.helmo.manager.controls.ControlListener;
-import be.helmo.manager.controls.Controls;
-import be.helmo.manager.GameStateManager;
-import be.helmo.manager.debug.Debug;
-import be.helmo.menu.MenuState;
+import com.c4nn4.game.GameState;
+import com.c4nn4.graphics.overimages.Img;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.main.screen.Screen;
+import com.c4nn4.manager.image.Content;
+import com.c4nn4.manager.controls.ControlListener;
+import com.c4nn4.manager.controls.Controls;
+import com.c4nn4.manager.GameStateManager;
+import com.c4nn4.manager.debug.Debug;
+import com.c4nn4.menu.MenuState;
 
 public class GamePause extends GameState {
     private final Img pause;
@@ -62,7 +63,7 @@ public class GamePause extends GameState {
         public void onKeyInputChanged(int down, int pressed, int released) {
             if ((pressed & Controls.PAUSE) == Controls.PAUSE) {
                 Debug.log("Pause in pause");
-                gsm.setPaused(false);
+                //gsm.setPaused(false);
 
                 pause(true);
             }

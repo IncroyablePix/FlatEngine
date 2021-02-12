@@ -1,12 +1,14 @@
 package be.helmo.menu;
 
 import be.helmo.game.GameConnection;
-import be.helmo.graphics.hud.elements.textfield.TextField;
-import be.helmo.graphics.render.Renderer;
-import be.helmo.graphics.texts.Alignement;
-import be.helmo.main.screen.Screen;
-import be.helmo.manager.GameStateManager;
-import be.helmo.manager.network.connection.HigherGroundsConnectionInitializer;
+import com.c4nn4.graphics.hud.elements.textfield.TextField;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.graphics.texts.Alignement;
+import com.c4nn4.main.screen.Screen;
+import com.c4nn4.manager.GameStateManager;
+import com.c4nn4.manager.network.connection.HigherGroundsConnectionInitializer;
+import com.c4nn4.menu.MenuElement;
+import com.c4nn4.menu.MenuState;
 
 import java.util.regex.Pattern;
 

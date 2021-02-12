@@ -1,13 +1,14 @@
 package be.helmo.level;
 
-import be.helmo.graphics.render.Renderer;
-import be.helmo.graphics.sprites.ActiveSprite;
-import be.helmo.main.GameThread;
-import be.helmo.main.screen.Screen;
-import be.helmo.manager.debug.Debug;
-import be.helmo.manager.debug.DebugInfo;
-import be.helmo.manager.image.PixManager;
-import be.helmo.physics.coords.Coords;
+import com.c4nn4.game.level.Camera;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.graphics.sprites.ActiveSprite;
+import com.c4nn4.main.GameThread;
+import com.c4nn4.main.screen.Screen;
+import com.c4nn4.manager.debug.Debug;
+import com.c4nn4.manager.debug.DebugInfo;
+import com.c4nn4.manager.image.PixManager;
+import com.c4nn4.physics.coords.Coords;
 
 import java.awt.*;
 

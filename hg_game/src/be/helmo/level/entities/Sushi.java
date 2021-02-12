@@ -1,13 +1,13 @@
 package be.helmo.level.entities;
 
-import be.helmo.graphics.sprites.ActiveSprite;
-import be.helmo.level.GameLevel;
-import be.helmo.main.GameThread;
-import be.helmo.physics.Collider;
+import com.c4nn4.graphics.sprites.ActiveSprite;
+import be.helmo.level.HigherGroundsLevel;
+import com.c4nn4.main.GameThread;
+import com.c4nn4.physics.Collider;
 
 public class Sushi extends Pickup implements Pickupable {
 
-    public Sushi(GameLevel gl, ActiveSprite activeSprite, double x, double y) {
+    public Sushi(HigherGroundsLevel gl, ActiveSprite activeSprite, double x, double y) {
         super(gl, activeSprite, x, y);
     }
 

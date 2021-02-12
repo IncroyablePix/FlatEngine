@@ -1,9 +1,11 @@
 package be.helmo.menu;
 
-import be.helmo.graphics.render.Renderer;
-import be.helmo.main.screen.Screen;
-import be.helmo.manager.GameStateManager;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.main.screen.Screen;
+import com.c4nn4.manager.GameStateManager;
 import be.helmo.menu.options.Resolution;
+import com.c4nn4.menu.MenuElement;
+import com.c4nn4.menu.MenuState;
 
 import java.util.Arrays;
 

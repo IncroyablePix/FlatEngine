@@ -1,9 +1,9 @@
 package be.helmo.level.entities.particles.types;
 
-import be.helmo.graphics.sprites.ActiveSprite;
+import com.c4nn4.graphics.sprites.ActiveSprite;
 import be.helmo.level.entities.particles.ParticlesInitialVelSet;
 import be.helmo.level.entities.particles.SimpleUpwardsVelSet;
-import be.helmo.manager.image.PixManager;
+import com.c4nn4.manager.image.PixManager;
 
 public class BallParticle implements ParticleFabric {
     private final double x, y;

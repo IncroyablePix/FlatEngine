@@ -2,13 +2,14 @@ package be.helmo.level;
 
 import be.helmo.level.entities.ArrowDirections;
 import be.helmo.level.entities.Directions;
-import be.helmo.graphics.render.Renderer;
-import be.helmo.graphics.sprites.ActiveSprite;
-import be.helmo.level.entities.Entity;
-import be.helmo.level.entities.EntityMovementListener;
+import com.c4nn4.game.level.Camera;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.graphics.sprites.ActiveSprite;
+import com.c4nn4.physics.environment.Entity;
+import com.c4nn4.physics.environment.EntityMovementListener;
 import be.helmo.level.entities.Player;
-import be.helmo.main.GameThread;
-import be.helmo.physics.coords.Coords;
+import com.c4nn4.main.GameThread;
+import com.c4nn4.physics.coords.Coords;
 
 public class Arrow implements EntityMovementListener {
 

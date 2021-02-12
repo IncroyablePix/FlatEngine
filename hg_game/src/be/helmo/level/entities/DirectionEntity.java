@@ -1,10 +1,11 @@
 package be.helmo.level.entities;
 
-import be.helmo.graphics.render.Renderer;
-import be.helmo.graphics.sprites.ActiveSprite;
-import be.helmo.level.Camera;
-import be.helmo.level.GameLevel;
-import be.helmo.physics.Collider;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.graphics.sprites.ActiveSprite;
+import com.c4nn4.game.level.Camera;
+import be.helmo.level.HigherGroundsLevel;
+import com.c4nn4.physics.Collider;
+import com.c4nn4.physics.environment.Entity;
 
 /**
  * Direction Entity
@@ -21,7 +22,7 @@ public abstract class DirectionEntity extends Entity {
 
     protected Directions direction;
 
-    public DirectionEntity(GameLevel gl, ActiveSprite left, ActiveSprite right, double x, double y) {
+    public DirectionEntity(HigherGroundsLevel gl, ActiveSprite left, ActiveSprite right, double x, double y) {
         super(gl, left, x, y);
 
         this.left = left;

@@ -1,10 +1,10 @@
 package be.helmo.level.entities.particles;
 
-import be.helmo.graphics.sprites.ActiveSprite;
-import be.helmo.level.GameLevel;
-import be.helmo.level.entities.Entity;
-import be.helmo.physics.Collider;
-import be.helmo.physics.coords.Size;
+import com.c4nn4.graphics.sprites.ActiveSprite;
+import be.helmo.level.HigherGroundsLevel;
+import com.c4nn4.physics.Collider;
+import com.c4nn4.physics.environment.Entity;
+import com.c4nn4.physics.coords.Size;
 
 class Particle extends Entity {
 
@@ -14,7 +14,7 @@ class Particle extends Entity {
 
     private boolean physical;
 
-    public Particle(GameLevel gl, ActiveSprite activeSprite, double x, double y, double xSize, double ySize, boolean physical) {
+    public Particle(HigherGroundsLevel gl, ActiveSprite activeSprite, double x, double y, double xSize, double ySize, boolean physical) {
         super(gl, activeSprite, x, y);
 
         this.physical = physical;

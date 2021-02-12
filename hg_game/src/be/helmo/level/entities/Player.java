@@ -1,13 +1,15 @@
 package be.helmo.level.entities;
 
-import be.helmo.graphics.render.Renderer;
-import be.helmo.graphics.sprites.ActiveSprite;
+import com.c4nn4.game.level.Camera;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.graphics.sprites.ActiveSprite;
 import be.helmo.level.*;
-import be.helmo.manager.debug.Debug;
-import be.helmo.manager.debug.DebugInfo.DebugInfos;
-import be.helmo.physics.ColParams;
-import be.helmo.physics.Collider;
-import be.helmo.physics.Collision;
+import com.c4nn4.manager.debug.Debug;
+import com.c4nn4.manager.debug.DebugInfo.DebugInfos;
+import com.c4nn4.physics.ColParams;
+import com.c4nn4.physics.Collider;
+import com.c4nn4.physics.Collision;
+import com.c4nn4.physics.environment.Tile;
 
 public class Player extends DirectionEntity {
     private Arrow arrow;
@@ -16,7 +18,7 @@ public class Player extends DirectionEntity {
 
     private boolean jumped;
 
-    public Player(GameLevel gl, ActiveSprite left, ActiveSprite right, double x, double y) {
+    public Player(HigherGroundsLevel gl, ActiveSprite left, ActiveSprite right, double x, double y) {
         super(gl, left, right, x, y);
 
         //this.arrow = arrow;
@@ -35,6 +37,7 @@ public class Player extends DirectionEntity {
 
         //arrow.update();
 
+        HigherGroundsLevel gl = (HigherGroundsLevel) this.gl;
         if (!isDead() && gl.getWaterLevel() > getY()) {
             gl.onPlayerFallsInWater(this);
         }
@@ -74,6 +77,9 @@ public class Player extends DirectionEntity {
 
     @Override
     public void onCollision(Collision collision) {
+
+        HigherGroundsLevel gl = (HigherGroundsLevel) this.gl;
+
         if (collision != null) {
             if (collision.getDirection() == Collision.CollisionDirection.BOTTOM) {
                 gl.onPlayerReachesPlatform(this, toPlatform(collision.getTile()));
@@ -85,6 +91,8 @@ public class Player extends DirectionEntity {
     }
 
     private Platform toPlatform(Tile tile) {
+
+        HigherGroundsLevel gl = (HigherGroundsLevel) this.gl;
         return gl.getGroundPos(tile.getX(), tile.getY() + 1.0);
     }
 

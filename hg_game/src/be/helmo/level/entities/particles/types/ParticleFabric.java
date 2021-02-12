@@ -1,9 +1,8 @@
 package be.helmo.level.entities.particles.types;
 
-import be.helmo.graphics.sprites.ActiveSprite;
-import be.helmo.level.GameLevel;
+import be.helmo.level.HigherGroundsLevel;
+import com.c4nn4.graphics.sprites.ActiveSprite;
 import be.helmo.level.entities.particles.Particles;
-import be.helmo.level.entities.particles.ParticlesInitialVelSet;
 
 public interface ParticleFabric {
     ActiveSprite getActiveSprite();
@@ -15,7 +14,7 @@ public interface ParticleFabric {
     double getSizeY();
     double getMass();
 
-    static void createParticles(ParticleType type, double x, double y, int amount, int lifeSpan, boolean physical, GameLevel level) {
+    static void createParticles(ParticleType type, double x, double y, int amount, int lifeSpan, boolean physical, HigherGroundsLevel level) {
         if(level != null && type != null)
             level.addParticles(new Particles(level, amount, lifeSpan, physical, createParticleFabric(type, x, y)));
     }

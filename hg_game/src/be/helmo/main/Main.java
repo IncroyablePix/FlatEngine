@@ -1,12 +1,15 @@
 package be.helmo.main;
 
-import be.helmo.main.screen.GameWindow;
-import be.helmo.main.screen.Screen;
+import be.helmo.game.GameIntro;
+import com.c4nn4.main.screen.GameWindow;
+import com.c4nn4.main.screen.Screen;
+import com.c4nn4.manager.GameStateManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.lang.reflect.InvocationTargetException;
 
 public class Main {
     public static final String GAME_TITLE = "Higher Grounds";
@@ -19,7 +22,22 @@ public class Main {
     public static void main(String[] args) {
         JFrame window = new JFrame(GAME_TITLE);
         Screen screen = new Screen(window);
-        GameWindow gw = new GameWindow(window, screen);
+        GameWindow gw = null;
+        try {
+            gw = new GameWindow(window, screen, GAME_TITLE, GameIntro.class.getConstructor(GameStateManager.class));
+        }
+        catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
 
         screen.addResolutionChangedListener(gw);
 

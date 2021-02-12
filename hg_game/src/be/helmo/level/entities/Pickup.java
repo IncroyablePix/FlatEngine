@@ -1,17 +1,18 @@
 package be.helmo.level.entities;
 
-import be.helmo.graphics.render.Renderer;
-import be.helmo.graphics.sprites.ActiveSprite;
-import be.helmo.level.Camera;
-import be.helmo.level.GameLevel;
-import be.helmo.physics.ColParams;
-import be.helmo.physics.Collider;
-import be.helmo.physics.Collision;
+import com.c4nn4.graphics.render.Renderer;
+import com.c4nn4.graphics.sprites.ActiveSprite;
+import com.c4nn4.game.level.Camera;
+import be.helmo.level.HigherGroundsLevel;
+import com.c4nn4.physics.ColParams;
+import com.c4nn4.physics.Collider;
+import com.c4nn4.physics.Collision;
+import com.c4nn4.physics.environment.Entity;
 
 public class Pickup extends Entity implements Pickupable {
     private boolean jump;
 
-    public Pickup(GameLevel gl, ActiveSprite activeSprite, double x, double y) {
+    public Pickup(HigherGroundsLevel gl, ActiveSprite activeSprite, double x, double y) {
         super(gl, activeSprite, x, y);
         setColParams(ColParams.BOTTOM);
 
