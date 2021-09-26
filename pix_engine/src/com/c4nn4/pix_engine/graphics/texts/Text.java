@@ -48,7 +48,7 @@ public class Text extends Element {
         this.align = Alignement.LEFT;
     }
 
-    public void setAlignement(final Alignement align) {
+    public Text setAlignement(final Alignement align) {
         if (align != this.align) {
             switch (align) {
                 case LEFT: {
@@ -67,6 +67,8 @@ public class Text extends Element {
                 }
             }
         }
+
+        return this;
     }
 
     public Alignement getAlignement() { return this.align; }

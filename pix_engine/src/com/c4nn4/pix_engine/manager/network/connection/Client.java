@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
-public class Client<T extends Messageable> {
+public abstract class Client<T extends Messageable> {
     private final NetQueue<OwnedMessage<T>> toRead;
 
     private Thread thread;
@@ -23,7 +23,7 @@ public class Client<T extends Messageable> {
         this.running = false;
     }
 
-    public boolean connect(String address, int port) {
+    public void connect(String address, int port) {
         try {
             SocketAddress socketAddress = new InetSocketAddress(address, port);
             connection.connectToServer(socketAddress);
@@ -31,10 +31,10 @@ public class Client<T extends Messageable> {
             thread.start();
         }
         catch (IOException e) {
-            return false;
+            onConnectionFailed();
         }
 
-        return true;
+        onConnected();
     }
 
     public void disconnect() {
@@ -48,6 +48,8 @@ public class Client<T extends Messageable> {
             this.thread.join();
         }
         catch (InterruptedException ignored) { }
+
+        onDisconnect(Disconnection.DISCONNECTED);
     }
 
     public boolean isConnected() {
@@ -63,4 +65,7 @@ public class Client<T extends Messageable> {
         return this.toRead;
     }
 
+    protected abstract void onDisconnect(Disconnection type);
+    protected abstract void onConnected();
+    protected abstract void onConnectionFailed();
 }

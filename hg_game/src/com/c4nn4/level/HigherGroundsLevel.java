@@ -337,7 +337,7 @@ public class HigherGroundsLevel implements GameLevel {
             //observer.add(new FlashImage(Speed.MEDIUM, FlashImage.FlashColor.RED));
             //addParticles(new Particles(this, 10, 300, player.getX(), player.getY()));
             /*am.load("/com/c4nn4/resources/Sound/SFX/pascal.mp3", "pascal");
-            am.setVolume("pascal", 0);
+            am.setVolume("pascal", 6.0f);
             am.play("pascal");*/
 
             //map.toggleWaterMovement(true);

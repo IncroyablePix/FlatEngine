@@ -58,13 +58,7 @@ public class DebugConsole {
 
     private void shiftMessages() {
         String oldText;
-		
-		/*for(byte i = MAX_SIZE - 1; i >= 0; i --) {
-			oldText = messages[i].getText();
-			if(i != MAX_SIZE - 1) {
-				messages[i + 1].setText(oldText);
-			}
-		}*/
+
         for (byte i = 0; i < MAX_SIZE; i++) {
             oldText = messages[i].getText();
             if (i != 0) {

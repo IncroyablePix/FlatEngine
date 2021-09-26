@@ -50,12 +50,12 @@ public class Server<T extends Messageable> implements Runnable {
 
         for(Connection<T> client : clients) {
             if(client != null && client.isConnected()) {
-                if(client.getId() != ignore.getId()) {
+                if(ignore == null || client.getId() != ignore.getId()) {
                     message.resetCursor();
                     client.send(message);
                 }
             }
-            else {
+            else if(client != null) {
                 onClientDisconnect(client);
                 toRemove.add(client.getId());
                 client.disconnect();

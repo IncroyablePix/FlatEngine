@@ -29,12 +29,19 @@ public class TextField implements KeyboardTextListener, HUDElement {
     private boolean alwaysVisible;
     private boolean hover;
 
+    private Color boxColor;
+
     private TextFieldListener listener;
 
     public TextField(int x, int y, Alignement alignement, boolean alwaysVisible, TextFieldListener listener) {
+        this(x, y, alignement, Color.BLACK, alwaysVisible, listener);
+    }
+
+    public TextField(int x, int y, Alignement alignement, Color color, boolean alwaysVisible, TextFieldListener listener) {
         this.cursor = 0;
         this.focus = false;
         this.hover = false;
+        this.boxColor = color;
         this.stringBuilder = new StringBuilder();
         this.alignement = alignement;
         this.alwaysVisible = alwaysVisible;
@@ -85,13 +92,13 @@ public class TextField implements KeyboardTextListener, HUDElement {
         switch(alignement) {
             default:
             case LEFT:
-                renderer.drawRectangle(clickZone.x, clickZone.y + (FontManager.TEXT_SIZE / 2) + 5, clickZone.width, clickZone.height + 5, Color.BLACK);
+                renderer.drawRectangle(clickZone.x, clickZone.y + (FontManager.TEXT_SIZE / 2) + 5, clickZone.width, clickZone.height + 5, boxColor);
                 break;
             case CENTER:
-                renderer.drawRectangle(clickZone.x - (clickZone.width / 2), clickZone.y + (FontManager.TEXT_SIZE / 2) + 5, clickZone.width, clickZone.height + 5, Color.BLACK);
+                renderer.drawRectangle(clickZone.x - (clickZone.width / 2), clickZone.y + (FontManager.TEXT_SIZE / 2) + 5, clickZone.width, clickZone.height + 5, boxColor);
                 break;
             case RIGHT:
-                renderer.drawRectangle(clickZone.x - (clickZone.width), clickZone.y + (FontManager.TEXT_SIZE / 2) + 5, clickZone.width, clickZone.height + 5, Color.BLACK);
+                renderer.drawRectangle(clickZone.x - (clickZone.width), clickZone.y + (FontManager.TEXT_SIZE / 2) + 5, clickZone.width, clickZone.height + 5, boxColor);
                 break;
         }
     }

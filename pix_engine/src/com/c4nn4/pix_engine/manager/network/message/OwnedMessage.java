@@ -19,6 +19,10 @@ public class OwnedMessage<T extends Messageable> {
         return message;
     }
 
+    public int getSize() { return message.header()[1]; }
+
+    public int getMessageId() { return message.header()[0]; }
+
     @Override
     public String toString() {
         return message.toString();

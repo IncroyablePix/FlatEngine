@@ -4,6 +4,7 @@ import com.c4nn4.game.level.Camera;
 import com.c4nn4.pix_engine.graphics.layers.TileLayer;
 import com.c4nn4.pix_engine.graphics.render.Renderer;
 import com.c4nn4.pix_engine.main.screen.Screen;
+import com.c4nn4.pix_engine.physics.environment.AbstractTileLabel;
 import com.c4nn4.pix_engine.physics.environment.Tile;
 
 import java.util.ArrayList;
@@ -92,5 +93,19 @@ public class TileMap {
 
     public Tile getTile(int x, int y) {
         return ((tiles.length > x && x >= 0) && (tiles[x].length > y && y >= 0)) ? tiles[x][y] : null;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+
+        for(int i = 0; i < tiles.length; i ++) {
+            for(int j = 0; j < tiles[i].length; j ++) {
+                builder.append(tiles[i][j].getAbstractType().getId());
+            }
+            builder.append('\n');
+        }
+
+        return builder.toString();
     }
 }

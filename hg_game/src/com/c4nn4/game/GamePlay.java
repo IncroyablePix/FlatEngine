@@ -18,8 +18,6 @@ import com.c4nn4.pix_engine.menu.MenuState;
 
 public class GamePlay extends GameState implements LevelEndListener {
 
-    private final int ticks;
-
     private HigherGroundsLevel level;
     private final Img pause;
     private boolean paused;
@@ -32,7 +30,6 @@ public class GamePlay extends GameState implements LevelEndListener {
         controlsHandler = new GamePlayControlsHandler();
         Controls.get().addListener(controlsHandler);
 
-        ticks = GameThread.ticks();
         debug("Loading GamePlay...");
 
         AudioManager.get().load("/com/c4nn4/resources/Sound/SFX/drawning.wav", "drawn");
